@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>"Forgot Password" Form (used for client-side tests)</title>
+
+        {{>common-includes}}
+
+        <!-- Bring in client library being tested -->
+        <script type="text/javascript" src="/js/client/forgot.js"></script>
+    </head>
+    <body>
+        <!-- Sample "forgot password" form with all required markup -->
+        <div class="row">
+            <div class="column small-offset-4 small-4 forgot-viewport">
+                <div class="forgot-message">
+                    <p>Please enter the email address you used when creating your account, and a password reset email will be sent to you.</p>
+                </div>
+                {{>forgot-form}}
+            </div>
+        </div>
+
+        <!-- configure and instantiate our module -->
+        <script type="text/javascript">
+            var forgot = gpii.express.couchuser.frontend.forgot("body", {
+                components: {
+                    templates: {
+                        options: {
+                            model: {
+                                "templateUrl": "/hbs"
+                            }
+                        }
+                    }
+                }
+            });
+
+            $(document).foundation();
+        </script>
+    </body>
+</html>
+
+
+
