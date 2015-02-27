@@ -14,18 +14,23 @@
   "license": "See LICENSE file for details.",
   "dependencies": {
     "express-user-couchdb": "0.3.4",
-    "gpii-hb-helper":       "git://github.com/the-t-in-rtf/gpii-hb-helper.git",
+    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars",
     "infusion":             "git://github.com/fluid-project/infusion.git#605b0bcfaedf6193c31456236d3aa4e42cf36a96",
     "when":                 "3.7.2"
   },
   "devDependencies": {
-    "email-templates": "1.1.2",
-    "gpii-express":    "git://github.com/the-t-in-rtf/gpii-express",
-    "gpii-mail-test":  "git://github.com/the-t-in-rtf/gpii-test-mail.git",
-    "gpii-pouch":      "git://github.com/the-t-in-rtf/gpii-pouch",
-    "handlebars":      "2.0.0",
-    "jqUnit":          "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
-    "request":         "2.51.0",
-    "zombie":          "git://github.com/the-t-in-rtf/zombie.git#3b39fa26ae48e6ab37bf1b2967c64a0356132564"
+    "email-templates":     "1.1.2",
+    "gpii-express":        "git://github.com/the-t-in-rtf/gpii-express",
+    "gpii-mail-test":      "git://github.com/the-t-in-rtf/gpii-mail-test",
+    "gpii-pouch":          "git://github.com/the-t-in-rtf/gpii-pouchdb",
+    "grunt":                "~0.4.4",
+    "grunt-shell":          "0.6.4",
+    "grunt-contrib-jshint": "~0.9.0",
+    "grunt-jsonlint":       "1.0.4",
+    "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
+    "handlebars":           "2.0.0",
+    "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
+    "request":              "2.51.0",
+    "zombie":               "git://github.com/the-t-in-rtf/zombie.git#3b39fa26ae48e6ab37bf1b2967c64a0356132564"
   }
 }
