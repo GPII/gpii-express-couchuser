@@ -26,7 +26,17 @@ function isSaneResponse(jqUnit, error, response, body, statusCode) {
 require("./test-harness.js");
 
 function runTests() {
-    jqUnit.module("Testing /api/user directly (no client side code)...",  { "setup": function() { harness.smtp.reset();} });
+    var listeners = [];
+    jqUnit.module("Testing /api/user directly (no client side code)...",
+        {
+            "setup": function() {
+                while (listeners.length) {
+                    var listener = listeners.pop();
+                    harness.smtp.events.messageReceived.removeListener(listener);
+                }
+            }
+        }
+    );
 
     jqUnit.asyncTest("Testing full login/logout cycle...", function() {
         var jar = request.jar();
@@ -164,7 +174,7 @@ function runTests() {
         var password  = "password-" + timestamp;
         var email     = username + "@localhost";
 
-        harness.smtp.applier.change("mailHandler", function(that, connection) {
+        var mailHandler = function(that, connection) {
             var content = fs.readFileSync(that.model.messageFile);
 
             // Get the verification code and continue the verification process
@@ -204,7 +214,10 @@ function runTests() {
                     });
                 });
             }
-        });
+        };
+
+        harness.smtp.events.messageReceived.addListener(mailHandler);
+        listeners.push(mailHandler);
 
         // Start the signup process now that we have a working mail server...
         var signupRequest = require("request");
@@ -268,7 +281,7 @@ function runTests() {
         var newPassword  = "reset";
         var email        = username + "@localhost";
 
-        harness.smtp.applier.change("mailHandler", function(that, connection) {
+        var mailHandler = function(that, connection) {
             var content = fs.readFileSync(that.model.messageFile);
 
             // Get the reset code and continue the reset process
@@ -312,7 +325,10 @@ function runTests() {
                     });
                 });
             }
-        });
+        };
+        listeners.push(mailHandler);
+
+        harness.smtp.events.messageReceived.addListener(mailHandler);
 
         var forgotRequest = require("request");
         var forgotOptions = {
@@ -353,10 +369,10 @@ function runTests() {
     });
 
     jqUnit.onAllTestsDone.addListener(function() {
-        harness.stop();
+        harness.destroy();
     });
 };
 
 // Launch all servers and then start the tests above.
 var harness = gpii.express.couchuser.tests.harness({});
-harness.start(function() { runTests(); });
+//runTests();

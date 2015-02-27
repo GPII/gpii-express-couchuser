@@ -15,12 +15,12 @@ var gpii       = fluid.registerNamespace("gpii");
 var namespace  = "gpii.express.couchuser.tests.harness";
 var path       = require("path");
 
-require("../../../node_modules/gpii-express/src/js/helper");
 require("../../../node_modules/gpii-express/src/js/express");
 require("../../../node_modules/gpii-express/src/js/router");
 require("../../../node_modules/gpii-express/src/js/static");
 require("../../../node_modules/gpii-express/src/js/middleware");
-require("../../../node_modules/gpii-express/src/js/bodyparser");
+require("../../../node_modules/gpii-express/src/js/json");
+require("../../../node_modules/gpii-express/src/js/urlencoded");
 require("../../../node_modules/gpii-express/src/js/cookieparser");
 require("../../../node_modules/gpii-express/src/js/session");
 require("../../../node_modules/gpii-hb-helper/src/js/common/helpers");
@@ -28,33 +28,12 @@ require("../../../node_modules/gpii-hb-helper/src/js/server/dispatcher");
 require("../../../node_modules/gpii-hb-helper/src/js/server/helpers-server");
 require("../../../node_modules/gpii-hb-helper/src/js/server/inline");
 require("../../../node_modules/gpii-pouch/src/js/pouch");
-require("../../../node_modules/gpii-test-mail/src/js/mailserver");
+require("../../../node_modules/gpii-mail-test/src/js/mailserver");
+require("../../../node_modules/gpii-mail-test/src/js/simpleSmtpServer");
 
 require("../../js/server");
 
 var harness      = fluid.registerNamespace(namespace);
-
-// Convenience method to launch all servers at once and execute a callback when all are complete.
-harness.start = function(that, callback) {
-    that.smtp.listen(function() {
-        // TODO: reenable pouch once we figure out why it doesn't work with express-couchuser
-        //that.pouch.start(function() {
-            that.express.start(function() {
-                if (callback) { callback(); }
-            });
-        //});
-    });
-};
-
-harness.stop = function(that, callback) {
-    that.smtp.stop(function() {
-        // TODO: reenable pouch once we figure out why it doesn't work with express-couchuser
-        //that.pouch.stop(function() {
-        that.express.stop(callback);
-        //});
-    });
-
-};
 
 var bowerDir        = path.resolve(__dirname, "../../../bower_components");
 var jsDir           = path.resolve(__dirname, "../../js");
@@ -109,8 +88,11 @@ fluid.defaults(namespace, {
                     "adminRoles": [ "admin"]
                 },
                 components: {
-                    "bodyparser": {
-                        "type": "gpii.express.middleware.bodyparser"
+                    "json": {
+                        "type": "gpii.express.middleware.bodyparser.json"
+                    },
+                    "urlencoded": {
+                        "type": "gpii.express.middleware.bodyparser.urlencoded"
                     },
                     "cookieparser": {
                         "type": "gpii.express.middleware.cookieparser"
@@ -196,16 +178,6 @@ fluid.defaults(namespace, {
             "options": {
                 "config": { "port": 4025 }
             }
-        }
-    },
-    "invokers": {
-        "start": {
-            "funcName": namespace + ".start",
-            "args": ["{that}", "{arguments}.0"]
-        },
-        "stop": {
-            "funcName": namespace + ".stop",
-            "args": ["{that}", "{arguments}.0"]
         }
     }
 });
