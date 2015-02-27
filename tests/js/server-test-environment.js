@@ -35,13 +35,13 @@ var modulesDir      = path.resolve(__dirname, "../../../node_modules");
 //var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
 var viewDir         = path.resolve(__dirname, "../views");
 
-
 fluid.defaults("gpii.express.couchuser.tests.server.environment", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
     port:   7532,
     baseUrl: "http://localhost/",
     events: {
         constructServer: null,
+        messageReceived: null,
         started: null
     },
     components: {
@@ -173,7 +173,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         //},
         smtp: {
             type: "gpii.test.mail.smtp",
-            createOnEvent: "constructServer",
+            //createOnEvent: "constructServer",
             options: {
                 config: {
                     port: 4029
@@ -183,5 +183,8 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         testCaseHolder: {
             type: "gpii.express.couchuser.test.server.caseHolder"
         }
+    },
+    listeners: {
+        "{smtp}.events.messageReceived": "{that}.events.messageReceived.fire"
     }
 });

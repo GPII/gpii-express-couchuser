@@ -8,6 +8,7 @@ require("../../node_modules/kettle/lib/test/KettleTestUtils");
 var fluid        = fluid || require("infusion");
 var gpii         = fluid.registerNamespace("gpii");
 var jqUnit       = require("jqUnit");
+var fs           = require("fs");
 
 fluid.registerNamespace("gpii.express.couchuser.test.server.caseHolder");
 
@@ -39,6 +40,17 @@ gpii.express.couchuser.test.server.caseHolder.assembleUrl = function(baseUrl, pa
         fullPath = baseUrl + path;
     }
     return fullPath;
+};
+
+// An expander to generate a new username every time
+gpii.express.couchuser.test.server.caseHolder.generateUser = function () {
+    var timestamp = (new Date()).getTime();
+    return {
+        name:     "user-" + timestamp,
+        password: "user-" + timestamp,
+        email:    "user-" + timestamp + "@localhost",
+        roles:    []
+    };
 };
 
 // Each test has a function that is called when its request is issued.
@@ -120,6 +132,42 @@ gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked = func
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
+};
+
+// Verify that the signup was successful
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse = function(signupRequest, response, body) {
+    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
+};
+
+// Listen for the email with the verification code and launch the verification request
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function(signupRequest, verificationRequest, testEnvironment) {
+    var content = fs.readFileSync(testEnvironment.smtp.mailServer.options.messageFile);
+    var verificationCodeRegexp = new RegExp("content/verify/([a-z0-9-]+)", "i");
+    var matches = content.toString().match(verificationCodeRegexp);
+
+    jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
+
+    signupRequest.code = matches[0];
+    var path = "/api/user/verify/" + signupRequest.code;
+    verificationRequest.send({
+        path: path
+    });
+};
+
+// Listen for the results of hitting the verification link
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink = function(response, body) {
+    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
+    var data = typeof body === "string" ? JSON.parse(body) : body;
+    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
+};
+
+// Listen for the results of logging in with our verified acount
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function(signupRequest, response, body) {
+    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
+
+    var data = typeof body === "string" ? JSON.parse(body) : body;
+    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
+    jqUnit.assertNotUndefined("There should be a user returned.", data.user);
 };
 
 
@@ -406,7 +454,48 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                 port: "{testEnvironment}.options.port",
                 method: "POST"
             }
+        },
+        fullSignupInitialRequest: {
+            type: "kettle.test.request.httpCookie",
+            options: {
+                path: {
+                    expander: {
+                        funcName: "gpii.express.couchuser.test.server.caseHolder.assembleUrl",
+                        args:     ["{testEnvironment}.options.baseUrl", "api/user/signup"]
+                    }
+
+                },
+                user: {
+                    expander: {
+                        funcName: "gpii.express.couchuser.test.server.caseHolder.generateUser"
+                    }
+                },
+                port: "{testEnvironment}.options.port",
+                method: "POST"
+            }
+        },
+        fullSignupVerifyVerificationRequest: {
+            type: "kettle.test.request.httpCookie",
+            options: {
+                port: "{testEnvironment}.options.port",
+                method: "GET"
+            }
+        },
+        fullSignupLoginRequest: {
+            type: "kettle.test.request.httpCookie",
+            options: {
+                path: {
+                    expander: {
+                        funcName: "gpii.express.couchuser.test.server.caseHolder.assembleUrl",
+                        args:     ["{testEnvironment}.options.baseUrl", "api/user/signin"]
+                    }
+
+                },
+                port: "{testEnvironment}.options.port",
+                method: "POST"
+            }
         }
+
     },
     modules: [
         {
@@ -587,6 +676,47 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             listener: "gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked",
                             event: "{bogusResetRequest}.events.onComplete",
                             args: ["{bogusResetRequest}.nativeResponse", "{arguments}.0"]
+                        }
+                    ]
+                },
+                {
+                    name: "Testing creating a user, end-to-end...",
+                    type: "test",
+                    sequence: [
+                        { // This sequence point is required because of a QUnit bug - it defers the start of sequence by 13ms "to avoid any current callbacks" in its words
+                            func: "{testEnvironment}.events.constructServer.fire"
+                        },
+                        {
+                            listener: "fluid.identity",
+                            event: "{testEnvironment}.events.started"
+                        },
+                        {
+                            func: "{fullSignupInitialRequest}.send",
+                            args: [ "{fullSignupInitialRequest}.options.user" ]
+                        },
+                        {
+                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse",
+                            event: "{fullSignupInitialRequest}.events.onComplete",
+                            args: ["{fullSignupInitialRequest}", "{fullSignupInitialRequest}.nativeResponse", "{arguments}.0"]
+                        },
+                        {
+                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail",
+                            event: "{testEnvironment}.events.messageReceived",
+                            args: ["{fullSignupInitialRequest}", "{fullSignupVerifyVerificationRequest}", "{testEnvironment}"]
+                        },
+                        {
+                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink",
+                            event: "{bogusResetRequest}.events.onComplete",
+                            args: ["{bogusResetRequest}.nativeResponse", "{arguments}.0"]
+                        },
+                        {
+                            func: "{fullSignupLoginRequest}.send",
+                            args: [{ name: "{fullSignupInitialRequest}.user.name", password: "{fullSignupInitialRequest}.user.password" }]
+                        },
+                        {
+                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin",
+                            event: "{fullSignupLoginRequest}.events.onComplete",
+                            args: ["{fullSignupInitialRequest}", "{fullSignupLoginRequest}.nativeResponse", "{arguments}.0"]
                         }
                     ]
                 }
