@@ -701,7 +701,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail",
-                            event: "{testEnvironment}.events.messageReceived",
+                            event: "{testEnvironment}.smtp.mailServer.events.messageReceived",
                             args: ["{fullSignupInitialRequest}", "{fullSignupVerifyVerificationRequest}", "{testEnvironment}"]
                         },
                         {

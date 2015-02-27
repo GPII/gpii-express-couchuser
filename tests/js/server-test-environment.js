@@ -173,7 +173,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         //},
         smtp: {
             type: "gpii.test.mail.smtp",
-            //createOnEvent: "constructServer",
+            createOnEvent: "constructServer",
             options: {
                 config: {
                     port: 4029
@@ -183,8 +183,5 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         testCaseHolder: {
             type: "gpii.express.couchuser.test.server.caseHolder"
         }
-    },
-    listeners: {
-        "{smtp}.events.messageReceived": "{that}.events.messageReceived.fire"
     }
 });
