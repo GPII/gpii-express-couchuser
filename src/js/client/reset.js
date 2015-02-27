@@ -1,12 +1,13 @@
 // Provide a front-end to /api/user/reset
 // The second part of the password reset process, can only be used with a code generated using the "forgot password" form.
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamescape("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.reset");
 
     // Try to log in and display the results
-    gpii.express.couchuser.frontend.reset.submit = function(that, event) {
+    gpii.express.couchuser.frontend.reset.submit = function (that, event) {
         if (event) { event.preventDefault(); }
         var code     = that.locate("code").val();
         var password = that.locate("password").val();
@@ -32,7 +33,7 @@
     };
 
     // TODO: move this to a general module type that everyone inherits from
-    gpii.express.couchuser.frontend.reset.displayError = function(that, jqXHR, textStatus, errorThrown) {
+    gpii.express.couchuser.frontend.reset.displayError = function (that, jqXHR, textStatus, errorThrown) {
         var message = errorThrown;
         try {
             var jsonData = JSON.parse(jqXHR.responseText);
@@ -45,7 +46,7 @@
         that.templates.html(that.locate("message"),"common-error", { message: message });
     };
 
-    gpii.express.couchuser.frontend.reset.displayReceipt = function(that, responseData, textStatus, jqXHR) {
+    gpii.express.couchuser.frontend.reset.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
             that.applier.change("user",jsonData.user);
@@ -58,13 +59,13 @@
         }
     };
 
-    gpii.express.couchuser.frontend.reset.refresh = function(that) {
+    gpii.express.couchuser.frontend.reset.refresh = function (that) {
         that.templates.replaceWith(that.locate("form"),"reset-form", that.model);
         that.events.markupLoaded.fire();
     };
 
     // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.reset.init = function(that) {
+    gpii.express.couchuser.frontend.reset.init = function (that) {
         that.templates.loadTemplates();
         that.events.markupLoaded.fire();
     };

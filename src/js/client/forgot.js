@@ -1,6 +1,6 @@
 // Provide a front-end to /api/user/forgot
 // Allows users to request that their password be reset...
-
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamespace("gpii");
@@ -34,7 +34,7 @@
         that.templates.html(that.locate("message"),"common-error", { message: message });
     };
 
-    gpii.express.couchuser.frontend.forgot.displayReceipt = function(that, responseData, textStatus, jqXHR) {
+    gpii.express.couchuser.frontend.forgot.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
             that.applier.change("user",jsonData.user);

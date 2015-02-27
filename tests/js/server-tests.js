@@ -9,7 +9,6 @@
 var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 
-var path       = require("path");
 var request    = require("request");
 var jqUnit     = fluid.require("jqUnit");
 var fs         = require("fs");
@@ -17,14 +16,14 @@ var fs         = require("fs");
 require("./test-harness.js");
 
 function isSaneResponse(jqUnit, error, response, body, statusCode) {
-    var statusCode = statusCode ? statusCode : 200;
+    statusCode = statusCode ? statusCode : 200;
 
     jqUnit.assertNull("There should be no errors.", error);
 
     jqUnit.assertEquals("The status code should be appropriate", statusCode, response.statusCode);
 
     jqUnit.assertNotNull("There should be a body.", body);
-};
+}
 
 
 // TODO:  This is very bad, we clean up between runs and destroy the global instance ourselves
@@ -143,7 +142,7 @@ var tests = {
                             jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
                             jqUnit.assertUndefined("There should not be a user returned.", data.user);
                         });
-                    })
+                    });
                 });
 
             });
@@ -236,7 +235,7 @@ var tests = {
                 jqUnit.stop();
             });
         },
-        "mailCallback": function(that,connection){
+        "mailCallback": function(that) {
 
             var content = fs.readFileSync(that.smtp.mailServer.options.messageFile);
 
@@ -321,8 +320,6 @@ var tests = {
         "type": "webAndMailTest",
         "webCallback": function(that){
 
-            var timestamp = (new Date()).getTime();
-            // Apparently a username with only numbers causes problems with the data nano sends to couch.
             var username = "reset";
             var email = username + "@localhost";
 
@@ -343,7 +340,7 @@ var tests = {
                 jqUnit.stop();
             });
         },
-        "mailCallback": function (that, connection) {
+        "mailCallback": function (that) {
             var content = fs.readFileSync(that.smtp.mailServer.options.messageFile);
 
             // Get the reset code and continue the reset process
@@ -426,9 +423,7 @@ var tests = {
 jqUnit.module("Testing /api/user directly (no client side code)...");
 
 // TODO:  When we get a real harness working, each instance should be destroyed before the next is started to avoid port conflicts
-var keys = Object.keys(tests);
-for (var a = 0; a < keys.length; a++) {
-    var key = keys[a];
+Object.keys(tests).forEach(function(key){
     var test = tests[key];
     jqUnit.asyncTest(key, function(){
         if (test.type === "webTest") {
@@ -438,4 +433,4 @@ for (var a = 0; a < keys.length; a++) {
             gpii.express.couchuser.test.server.webAndMailTest(test.webCallback, test.mailCallback);
         }
     });
-}
+});

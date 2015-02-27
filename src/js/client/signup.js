@@ -1,4 +1,5 @@
 // provide a front-end to /api/user/signup
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamespace("gpii");
@@ -14,7 +15,7 @@
 
         // Our user handling library doesn't offer password confirmation, so we have to do it ourselves for now
         if (password !== confirm) {
-            signup.displayError(that, null, null, "The passwords you have entered don't match.");
+            that.displayError(that, null, null, "The passwords you have entered don't match.");
             return;
         }
 
@@ -49,7 +50,7 @@
         that.templates.html(that.locate("message"),"common-error", { message: message });
     };
 
-    gpii.express.couchuser.frontend.signup.displayReceipt = function(that, responseData, textStatus, jqXHR) {
+    gpii.express.couchuser.frontend.signup.displayReceipt = function(that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
             that.applier.change("user",jsonData.user);

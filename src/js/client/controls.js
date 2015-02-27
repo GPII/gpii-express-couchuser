@@ -1,4 +1,5 @@
 // Present a standard "user" menu with login/logout/profile controls
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamespace("gpii");
@@ -36,7 +37,7 @@
 
     // Update markup and wiring after a change in user status (login/logout, profile update)
     gpii.express.couchuser.frontend.controls.refresh = function(that) {
-        templates.replaceWith(that.locate("profile"),"user-controls", that.model);
+        that.templates.replaceWith(that.locate("profile"),"user-controls", that.model);
         that.events.markupLoaded.fire();
     };
 
@@ -50,10 +51,8 @@
             "logout":    ".user-menu-logout"
         },
         components: {
-            components: {
-                templates: {
-                    "type": "gpii.templates.hb.client"
-                }
+            templates: {
+                "type": "gpii.templates.hb.client"
             }
         },
         events: {

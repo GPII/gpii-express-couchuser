@@ -1,4 +1,5 @@
 // provide a front-end to /api/user/signin
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamespace("gpii");
@@ -36,7 +37,7 @@
         that.templates.html(that.locate("message"), that.model.templates.error, { "message": message });
     };
 
-    gpii.express.couchuser.frontend.login.displayReceipt = function(that, responseData, textStatus, jqXHR) {
+    gpii.express.couchuser.frontend.login.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
             that.applier.change("user", jsonData.user);

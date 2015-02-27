@@ -1,3 +1,4 @@
+"use strict";
 var testFiles = [
     "./server-tests.js",
     "./zombie-tests.js"

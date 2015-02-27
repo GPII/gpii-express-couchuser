@@ -1,11 +1,12 @@
 // A front-end component to provide meaningful feedback when users verify their accounts using /api/user/verify/:code
+/* global fluid, jQuery */
 (function ($) {
     "use strict";
     var gpii = fluid.registerNamespace("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.verify");
 
     // Try to log in and display the results
-    gpii.express.couchuser.frontend.verify.submit = function(that, event) {
+    gpii.express.couchuser.frontend.verify.submit = function (that, event) {
         if (event) { event.preventDefault(); }
 
         if (!that.model || !that.model.code) {
@@ -25,7 +26,7 @@
     };
 
     // TODO: move this to a general module type that everyone inherits from
-    gpii.express.couchuser.frontend.verify.displayError = function(that, jqXHR, textStatus, errorThrown) {
+    gpii.express.couchuser.frontend.verify.displayError = function (that, jqXHR, textStatus, errorThrown) {
         var message = errorThrown;
         try {
             var jsonData = JSON.parse(jqXHR.responseText);
@@ -38,7 +39,7 @@
         that.templates.html(that.locate("message"),"common-error", { message: message } );
     };
 
-    gpii.express.couchuser.frontend.verify.displayReceipt = function(that, responseData, textStatus, jqXHR) {
+    gpii.express.couchuser.frontend.verify.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
             that.applier.change("user",jsonData.user);
@@ -51,7 +52,7 @@
     };
 
     // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.verify.init = function(that) {
+    gpii.express.couchuser.frontend.verify.init = function (that) {
         that.templates.loadTemplates();
     };
 

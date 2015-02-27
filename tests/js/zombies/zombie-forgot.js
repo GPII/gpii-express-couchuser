@@ -8,9 +8,11 @@ var Browser    = require("zombie");
 
 var fs         = require("fs");
 
-var isBrowserSane = require("./browser-sanity.js")
+var isBrowserSane = require("./browser-sanity.js");
 
 require("../test-harness.js");
+
+var harness = gpii.express.couchuser.tests.harness({});
 
 function runTests() {
     var browser;
@@ -21,7 +23,7 @@ function runTests() {
         var timestamp = (new Date()).getTime();
 
         // Set up a handler to continue the process once we receive an email
-        harness.smtp.applier.change("mailHandler", function(that, connection) {
+        harness.smtp.applier.change("mailHandler", function(that) {
             var content = fs.readFileSync(that.model.messageFile);
 
             // Get the reset code and continue the reset process
@@ -35,7 +37,7 @@ function runTests() {
 
                 // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
                 var resetBrowser = Browser.create();
-                resetBrowser.visit(resetUrl).then(function(error){
+                resetBrowser.visit(resetUrl).then(function(){
                     jqUnit.start();
                     isBrowserSane(jqUnit, resetBrowser);
                     jqUnit.stop();
@@ -62,7 +64,7 @@ function runTests() {
 
                             // Log in using the new details
                             jqUnit.stop();
-                            resetBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function(error) {
+                            resetBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
                                 jqUnit.start();
                                 isBrowserSane(jqUnit, resetBrowser);
                                 jqUnit.stop();
@@ -92,7 +94,7 @@ function runTests() {
             }
         });
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function(error){
+        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -123,7 +125,7 @@ function runTests() {
         var timestamp = (new Date()).getTime();
 
         // Set up a handler to continue the process once we receive an email
-        harness.smtp.applier.change("mailHandler", function(that, connection) {
+        harness.smtp.applier.change("mailHandler", function (that) {
             var content = fs.readFileSync(that.model.messageFile);
 
             // Get the reset code and continue the reset process
@@ -137,7 +139,7 @@ function runTests() {
 
                 // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
                 var resetBrowser = Browser.create();
-                resetBrowser.visit(resetUrl).then(function(error){
+                resetBrowser.visit(resetUrl).then(function () {
                     jqUnit.start();
                     isBrowserSane(jqUnit, resetBrowser);
                     jqUnit.stop();
@@ -170,7 +172,7 @@ function runTests() {
             }
         });
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function(error){
+        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -200,7 +202,7 @@ function runTests() {
     jqUnit.asyncTest("Try to reset a user who doesn't exist...", function() {
         var timestamp = (new Date()).getTime();
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function(error){
+        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -231,7 +233,7 @@ function runTests() {
 
     jqUnit.asyncTest("Try to use an invalid reset code...", function() {
         var timestamp = (new Date()).getTime();
-        browser.visit(harness.express.options.config.express.baseUrl + "content/reset/" + timestamp).then(function (error) {
+        browser.visit(harness.express.options.config.express.baseUrl + "content/reset/" + timestamp).then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -255,7 +257,7 @@ function runTests() {
                     if (alert.html()) {
                         jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                     }
-            });
+                });
         });
     });
 
@@ -265,5 +267,4 @@ function runTests() {
 }
 
 // Launch all servers and then start the tests above.
-var harness = gpii.express.couchuser.tests.harness({});
 harness.start(runTests);

@@ -11,27 +11,13 @@
 // Commonly, you will want to launch your tests from the callback of whichever of these you launch last.
 "use strict";
 var fluid      = fluid || require("infusion");
-var gpii       = fluid.registerNamespace("gpii");
 var path       = require("path");
 
-require("../../node_modules/gpii-express/src/js/express");
-require("../../node_modules/gpii-express/src/js/router");
-require("../../node_modules/gpii-express/src/js/static");
-require("../../node_modules/gpii-express/src/js/middleware");
-require("../../node_modules/gpii-express/src/js/json");
-require("../../node_modules/gpii-express/src/js/urlencoded");
-require("../../node_modules/gpii-express/src/js/cookieparser");
-require("../../node_modules/gpii-express/src/js/session");
-require("../../node_modules/gpii-handlebars/src/js/common/helper");
-require("../../node_modules/gpii-handlebars/src/js/common/md-common");
-require("../../node_modules/gpii-handlebars/src/js/common/jsonify");
-require("../../node_modules/gpii-handlebars/src/js/server/dispatcher");
-require("../../node_modules/gpii-handlebars/src/js/server/md-server");
-require("../../node_modules/gpii-handlebars/src/js/server/handlebars");
-require("../../node_modules/gpii-handlebars/src/js/server/inline");
+require("gpii-express");
+require("gpii-handlebars");
+
 require("../../node_modules/gpii-pouch/src/js/pouch");
-require("../../node_modules/gpii-mail-test/src/js/mailserver");
-require("../../node_modules/gpii-mail-test/src/js/simpleSmtpServer");
+require("gpii-mail-test");
 
 require("../../src/js/server");
 
@@ -41,7 +27,8 @@ var bowerDir        = path.resolve(__dirname, "../../../bower_components");
 var jsDir           = path.resolve(__dirname, "../../js");
 var mailTemplateDir = path.resolve(__dirname, "../templates");
 var modulesDir      = path.resolve(__dirname, "../../../node_modules");
-var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
+// TODO: Uncomment this out when we get pouch working
+//var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
 var viewDir         = path.resolve(__dirname, "../views");
 
 
@@ -79,8 +66,8 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     "users": "http://localhost:5984/_users",
                     request_defaults: {
                         auth: {
-                            user: 'admin',
-                            pass: 'admin'
+                            user: "admin",
+                            pass: "admin"
                         }
                     },
                     "email":  {

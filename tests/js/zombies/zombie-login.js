@@ -9,11 +9,10 @@ var gpii       = fluid.registerNamespace("gpii");
 var jqUnit     = fluid.require("jqUnit");
 var Browser    = require("zombie");
 
-var fs         = require("fs");
-
-var isBrowserSane = require("./browser-sanity.js")
+var isBrowserSane = require("./browser-sanity.js");
 
 require("../test-harness.js");
+var harness = gpii.express.couchuser.tests.harness({});
 
 function runTests() {
     var browser;
@@ -21,7 +20,7 @@ function runTests() {
     jqUnit.module("End-to-end functional login tests...", { "setup": function() { browser = Browser.create({ continueOnError: true }); }});
 
     jqUnit.asyncTest("Login with a valid username and password...", function() {
-        browser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function(error){
+        browser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -49,7 +48,7 @@ function runTests() {
     });
 
     jqUnit.asyncTest("Login with an invalid username and password...", function() {
-        browser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function(error){
+        browser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -86,5 +85,4 @@ function runTests() {
 }
 
 // Launch all servers and then start the tests above.
-var harness = gpii.express.couchuser.tests.harness({});
 harness.start(runTests);
