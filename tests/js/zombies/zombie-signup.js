@@ -3,7 +3,7 @@
 // There is some overlap between this and the server-tests.js, a test that fails in both is likely broken on the server side, a test that only fails here is likely broken in the client-facing code.
 
 "use strict";
-var fluid         = require("../../../../node_modules/infusion/src/module/fluid");
+var fluid         = fluid || require("infusion");
 var gpii          = fluid.registerNamespace("gpii");
 
 var jqUnit        = fluid.require("jqUnit");

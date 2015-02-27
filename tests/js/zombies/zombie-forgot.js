@@ -1,6 +1,6 @@
 // Test the "forgot password" reset mechanism end-to-end
 "use strict";
-var fluid      = require("../../../../node_modules/infusion/src/module/fluid");
+var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 
 var jqUnit     = fluid.require("jqUnit");

@@ -10,30 +10,32 @@
 //
 // Commonly, you will want to launch your tests from the callback of whichever of these you launch last.
 "use strict";
-var fluid      = require("../../../node_modules/infusion/src/module/fluid");
+var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
-var namespace  = "gpii.express.couchuser.tests.harness";
 var path       = require("path");
 
-require("../../../node_modules/gpii-express/src/js/express");
-require("../../../node_modules/gpii-express/src/js/router");
-require("../../../node_modules/gpii-express/src/js/static");
-require("../../../node_modules/gpii-express/src/js/middleware");
-require("../../../node_modules/gpii-express/src/js/json");
-require("../../../node_modules/gpii-express/src/js/urlencoded");
-require("../../../node_modules/gpii-express/src/js/cookieparser");
-require("../../../node_modules/gpii-express/src/js/session");
-require("../../../node_modules/gpii-hb-helper/src/js/common/helpers");
-require("../../../node_modules/gpii-hb-helper/src/js/server/dispatcher");
-require("../../../node_modules/gpii-hb-helper/src/js/server/helpers-server");
-require("../../../node_modules/gpii-hb-helper/src/js/server/inline");
-require("../../../node_modules/gpii-pouch/src/js/pouch");
-require("../../../node_modules/gpii-mail-test/src/js/mailserver");
-require("../../../node_modules/gpii-mail-test/src/js/simpleSmtpServer");
+require("../../node_modules/gpii-express/src/js/express");
+require("../../node_modules/gpii-express/src/js/router");
+require("../../node_modules/gpii-express/src/js/static");
+require("../../node_modules/gpii-express/src/js/middleware");
+require("../../node_modules/gpii-express/src/js/json");
+require("../../node_modules/gpii-express/src/js/urlencoded");
+require("../../node_modules/gpii-express/src/js/cookieparser");
+require("../../node_modules/gpii-express/src/js/session");
+require("../../node_modules/gpii-handlebars/src/js/common/helper");
+require("../../node_modules/gpii-handlebars/src/js/common/md-common");
+require("../../node_modules/gpii-handlebars/src/js/common/jsonify");
+require("../../node_modules/gpii-handlebars/src/js/server/dispatcher");
+require("../../node_modules/gpii-handlebars/src/js/server/md-server");
+require("../../node_modules/gpii-handlebars/src/js/server/handlebars");
+require("../../node_modules/gpii-handlebars/src/js/server/inline");
+require("../../node_modules/gpii-pouch/src/js/pouch");
+require("../../node_modules/gpii-mail-test/src/js/mailserver");
+require("../../node_modules/gpii-mail-test/src/js/simpleSmtpServer");
 
-require("../../js/server");
+require("../../src/js/server");
 
-var harness      = fluid.registerNamespace(namespace);
+fluid.registerNamespace("gpii.express.couchuser.tests.harness");
 
 var bowerDir        = path.resolve(__dirname, "../../../bower_components");
 var jsDir           = path.resolve(__dirname, "../../js");
@@ -43,13 +45,20 @@ var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
 var viewDir         = path.resolve(__dirname, "../views");
 
 
-// We randomize our settings to avoid problems with concurrency
-
-
 // TODO:  Figure out why our pouch instance doesn't work with express-couchuser, and change options.config.users in the express component below
 // For now, we use our local couch instance directly.
-fluid.defaults(namespace, {
+fluid.defaults("gpii.express.couchuser.tests.harness", {
     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+    members: {
+        ready: false,
+        started: false
+    },
+    events: {
+        started: null
+    },
+    listeners: {
+        "{express}.events.started": "{harness}.events.started.fire"
+    },
     components: {
         "express": {
             "type": "gpii.express",
@@ -124,6 +133,9 @@ fluid.defaults(namespace, {
                             content: bowerDir
                         }
                     },
+                    handlebars: {
+                        type: "gpii.express.hb"
+                    },
                     content: {
                         type: "gpii.express.hb.dispatcher",
                         "options": {
@@ -135,9 +147,6 @@ fluid.defaults(namespace, {
                         "options": {
                             "path": "/hbs"
                         }
-                    },
-                    helpers: {
-                        type: "gpii.express.hb.helpers.server"
                     }
                 }
             }
@@ -176,7 +185,9 @@ fluid.defaults(namespace, {
         "smtp": {
             "type": "gpii.test.mail.smtp",
             "options": {
-                "config": { "port": 4025 }
+                "config": {
+                    "port": 4025
+                }
             }
         }
     }
