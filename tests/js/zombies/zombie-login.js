@@ -6,12 +6,12 @@
 var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 
-var jqUnit     = fluid.require("jqUnit");
+//var jqUnit     = fluid.require("jqUnit");
 var Browser    = require("zombie");
 
 var isBrowserSane = require("./browser-sanity.js");
 
-require("../test-harness.js");
+require("./zombie-test-harness.js");
 var harness = gpii.express.couchuser.tests.harness({});
 
 function runTests() {
@@ -79,10 +79,6 @@ function runTests() {
         });
     });
 
-    jqUnit.onAllTestsDone.addListener(function() {
-        harness.stop();
-    });
 }
 
-// Launch all servers and then start the tests above.
-harness.start(runTests);
+//runTests();

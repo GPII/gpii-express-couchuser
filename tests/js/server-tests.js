@@ -11,6 +11,7 @@ var gpii       = fluid.registerNamespace("gpii");
 require("./server-test-caseholder.js");
 require("./server-test-environment.js");
 
-gpii.express.couchuser.tests.server.environment({});
+gpii.express.couchuser.tests.server.environment({
+});
 
 
