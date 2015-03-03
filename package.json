@@ -32,6 +32,6 @@
     "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
     "kettle":               "git://github.com/fluid-project/kettle.git#e79bb81196df68c97eaa9f96c485a4321b69af75",
     "request":              "2.51.0",
-    "zombie":               "git://github.com/the-t-in-rtf/zombie.git#3b39fa26ae48e6ab37bf1b2967c64a0356132564"
+    "zombie":               "3.0.11-0"
   }
 }
