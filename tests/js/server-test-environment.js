@@ -1,14 +1,4 @@
-// Configure a mail server, database server, and express instance for end-to-end tests
-//
-// You will need to instatiate this module from your tests and launch the servers that are created here using commands like:
-//
-// instance.express.listen(optionalCallback);
-//
-// instance.pouch.listen(optionalCallback);
-//
-// instance.smtp.listen(optionalCallback);
-//
-// Commonly, you will want to launch your tests from the callback of whichever of these you launch last.
+// Configure a testEnvironment with an express server, pouch instance (coming soon), and outgoing mail server.
 "use strict";
 var fluid      = fluid || require("infusion");
 var path       = require("path");
@@ -123,7 +113,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                     content: {
                         type: "gpii.express.hb.dispatcher",
                         options: {
-                            path:    "/content"
+                            path:    "/content/:template"
                         }
                     },
                     inline: {
