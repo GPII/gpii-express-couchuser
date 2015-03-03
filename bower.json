@@ -21,13 +21,14 @@
   ],
   "ignore": [
     "**/.*",
+    "Gruntfile.js",
     "node_modules",
     "bower_components",
     "test",
     "tests"
   ],
   "dependencies": {
-    "fluid-handlebars-helper": "git://github.com/the-t-in-rtf/fluid-handlebars-helper.git",
+    "gpii-handlebars": "git://github.com/the-t-in-rtf/gpii-handlebars.git",
     "foundation":              "zurb/bower-foundation#~5.3.1"
   }
 }
