@@ -147,11 +147,12 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function(s
 
     jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
 
-    signupRequest.code = matches[0];
+    signupRequest.code = matches[1];
     var path = "/api/user/verify/" + signupRequest.code;
-    verificationRequest.send({
-        path: path
-    });
+
+    // I can't fix this with the model, so I have to override it completely
+    verificationRequest.options.path = path;
+    verificationRequest.send();
 };
 
 // Listen for the results of hitting the verification link
@@ -163,151 +164,12 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink =
 
 // Listen for the results of logging in with our verified acount
 gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function(signupRequest, response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
+    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertTrue("The response should be 'ok'.", data.ok);
     jqUnit.assertNotUndefined("There should be a user returned.", data.user);
 };
-
-
-//    "Testing creating and verifying a user end-to-end..." : {
-//        "type": "webAndMailTest",
-//        "webCallback": function(that){
-//            // Start the signup process now that we have a working mail server...
-//            var signupRequest = require("request");
-//            var signupOptions = {
-//                "url": that.express.options.config.express.baseUrl + "api/user/signup",
-//                "json": {
-//                    "name": username,
-//                    "password": password,
-//                    "email": email,
-//                    "roles": []
-//                }
-//            };
-//
-//            signupRequest.post(signupOptions, function (error, response, body) {
-//                jqUnit.start();
-//                isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                // Stop and resume when the mail server receives its message.
-//                jqUnit.stop();
-//            });
-//        },
-//        "mailCallback": function(that) {
-//
-//            var content = fs.readFileSync(that.smtp.mailServer.options.messageFile);
-//
-//            // Get the verification code and continue the verification process
-//            var verificationCodeRegexp = new RegExp("content/verify/([a-z0-9-]+)", "i");
-//            var matches = content.toString().match(verificationCodeRegexp);
-//
-//            jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
-//            if (matches) {
-//                var code = matches[1];
-//
-//                var verifyRequest = request.defaults({timeout: 500});
-//                var verifyOptions = {
-//                    "url": that.express.options.config.express.baseUrl + "api/user/verify/" + code
-//                };
-//
-//                verifyRequest.get(verifyOptions, function (error, response, body) {
-//                    jqUnit.start();
-//                    isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                    var data = typeof body === "string" ? JSON.parse(body) : body;
-//                    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-//                    jqUnit.stop();
-//
-//                    var loginRequest = request.defaults({timeout: 500});
-//                    var loginOptions = {
-//                        "url": that.express.options.config.express.baseUrl + "api/user/signin",
-//                        "json": {"name": username, "password": password}
-//                    };
-//
-//                    loginRequest.post(loginOptions, function (error, response, body) {
-//                        jqUnit.start();
-//                        isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                        var data = typeof body === "string" ? JSON.parse(body) : body;
-//                        jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-//                        jqUnit.assertNotUndefined("There should be a user returned.", data.user);
-//                    });
-//                });
-//            }
-//        }
-//    },
-//    "Testing resetting a user's password end-to-end..." : {
-//        "type": "webAndMailTest",
-//        "webCallback": function(that){
-//
-//            var username = "reset";
-//            var email = username + "@localhost";
-//
-//
-//            var forgotRequest = require("request");
-//            var forgotOptions = {
-//                "url": that.express.options.config.express.baseUrl + "api/user/forgot",
-//                "json": {
-//                    "email": email
-//                }
-//            };
-//
-//            forgotRequest.post(forgotOptions, function (error, response, body) {
-//                jqUnit.start();
-//                isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                // Stop and resume when the mail server receives its message.
-//                jqUnit.stop();
-//            });
-//        },
-//        "mailCallback": function (that) {
-//            var content = fs.readFileSync(that.smtp.mailServer.options.messageFile);
-//
-//            // Get the reset code and continue the reset process
-//            var resetCodeRegexp = new RegExp("reset/([a-z0-9-]+)", "i");
-//            var matches = content.toString().match(resetCodeRegexp);
-//
-//            jqUnit.assertNotNull("There should be a reset code in the email sent to the user.", matches);
-//            if (matches) {
-//                var code = matches[1];
-//
-//                var resetRequest = request.defaults({timeout: 500});
-//                var resetOptions = {
-//                    "url": that.express.options.config.express.baseUrl + "api/user/reset/",
-//                    "json": {
-//                        "code":     code,
-//                        "password": newPassword
-//                    }
-//                };
-//
-//                resetRequest.post(resetOptions, function (error, response, body) {
-//                    jqUnit.start();
-//                    isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                    var data = typeof body === "string" ? JSON.parse(body) : body;
-//                    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-//                    jqUnit.stop();
-//
-//                    var loginRequest = request.defaults({timeout: 500});
-//                    var loginOptions = {
-//                        "url": that.express.options.config.express.baseUrl + "api/user/signin",
-//                        "json": {"name": "reset", "password": newPassword}
-//                    };
-//
-//                    loginRequest.post(loginOptions, function (error, response, body) {
-//                        jqUnit.start();
-//                        isSaneResponse(jqUnit, error, response, body, 200);
-//
-//                        var data = typeof body === "string" ? JSON.parse(body) : body;
-//                        jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-//                        jqUnit.assertNotUndefined("There should be a user returned.", data.user);
-//                    });
-//                });
-//            }
-//        }
-//    },
-
 
 // Each test has a request instance of `kettle.test.request.http` or `kettle.test.request.httpCookie`, and a test module that wires the request to the listener that handles its results.
 fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
@@ -706,12 +568,12 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink",
-                            event: "{bogusResetRequest}.events.onComplete",
-                            args: ["{bogusResetRequest}.nativeResponse", "{arguments}.0"]
+                            event: "{fullSignupVerifyVerificationRequest}.events.onComplete",
+                            args: ["{fullSignupVerifyVerificationRequest}.nativeResponse", "{arguments}.0"]
                         },
                         {
                             func: "{fullSignupLoginRequest}.send",
-                            args: [{ name: "{fullSignupInitialRequest}.user.name", password: "{fullSignupInitialRequest}.user.password" }]
+                            args: [{ name: "{fullSignupInitialRequest}.options.user.name", password: "{fullSignupInitialRequest}.options.user.password" }]
                         },
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin",
