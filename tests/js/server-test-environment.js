@@ -39,18 +39,13 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
     gradeNames: ["fluid.test.testEnvironment", "autoInit"],
     port:   7532,
     baseUrl: "http://localhost/",
-    events: {
-        constructServer: null,
-        messageReceived: null,
-        started: null
-    },
     components: {
         express: {
             type: "gpii.express",
             createOnEvent: "constructServer",
             options: {
-                events: {
-                    started: "{testEnvironment}.events.started"
+                listeners: {
+                    "started": "{testEnvironment}.events.expressStarted.fire"
                 },
                 config: {
                     express: {
@@ -65,7 +60,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                         name: "GPII Express Couchuser Test Server",
                         url:  "{testEnvironment}.options.baseUrl"
                     },
-                    users: "http://localhost:5984/_users",
+                    users: "http://localhost:5984/_users", // Use Couchdb for now
                     request_defaults: {
                         auth: {
                             user: "admin",
@@ -77,7 +72,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                         service: "SMTP",
                         SMTP: {
                             host: "localhost",
-                            port: 4025
+                            port: 4029
                         },
                         templateDir: mailTemplateDir
                     },
@@ -144,6 +139,9 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         //pouch: {
         //    type: "gpii.express",
         //    options: {
+        //        listeners: {
+        //            "started": "{testEnvironment}.events.pouchStarted.fire"
+        //        },
         //        config: {
         //            express: {
         //                "port" :   7534,
@@ -175,6 +173,9 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
             type: "gpii.test.mail.smtp",
             createOnEvent: "constructServer",
             options: {
+                listeners: {
+                    "ready": "{testEnvironment}.events.smtpStarted.fire"
+                },
                 config: {
                     port: 4029
                 }
@@ -182,6 +183,21 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         },
         testCaseHolder: {
             type: "gpii.express.couchuser.test.server.caseHolder"
+        }
+    },
+    events: {
+        constructServer: null,
+        messageReceived: null,
+        expressStarted:  null,
+        pouchStarted:    null,
+        smtpStarted:     null,
+        started: {
+            events: {
+                expressStarted: "expressStarted",
+                // TODO:  Reenable once we get pouch working...
+                //pouchStarted:   "{pouch}.events.started",
+                smtpStarted:    "smtpStarted"
+            }
         }
     }
 });
