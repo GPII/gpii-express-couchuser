@@ -3,7 +3,7 @@
 /* global fluid, jQuery */
 (function ($) {
     "use strict";
-    var gpii = fluid.registerNamescape("gpii");
+    var gpii = fluid.registerNamespace("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.reset");
 
     // Try to log in and display the results
