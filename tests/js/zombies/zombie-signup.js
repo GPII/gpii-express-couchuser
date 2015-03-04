@@ -125,58 +125,70 @@ function runTests() {
         harness.smtp.events.messageReceived.addListener(function (that) {
             var content = fs.readFileSync(that.options.messageFile);
 
-            // Get the reset code and continue the reset process
-            var verifyCodeRegexp = new RegExp("(http.+verify?code=[a-z0-9-]+)", "i");
-            var matches = content.toString().match(verifyCodeRegexp);
+            var MailParser = require("mailparser").MailParser,
+                mailparser = new MailParser();
 
-            jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
-            if (matches) {
-                var verifyUrl = matches[1];
-                jqUnit.stop();
+            // If this ends up going any deeper, we should refactor to use a testEnvironment and testCaseHolder
+            mailparser.on("end", function(mailObject){
+                var content = mailObject.text;
 
-                // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
-                var verifyBrowser = Browser.create();
-                verifyBrowser.visit(verifyUrl).then(function () {
-                    jqUnit.start();
-                    isBrowserSane(jqUnit, verifyBrowser);
+                // Get the reset code and continue the reset process
+                var verifyCodeRegexp = new RegExp("(http.+verify?code=[a-z0-9-]+)", "i");
+                var matches = content.toString().match(verifyCodeRegexp);
 
-                    // A "success" message should be visible
-                    var feedback = verifyBrowser.window.$(".success");
-                    jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
-
-                    // There should be no alerts
-                    var alert = verifyBrowser.window.$(".alert");
-                    jqUnit.assertUndefined("There should not be an alert...", alert.html());
-
-                    // Log in using the new account
+                jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
+                if (matches) {
+                    var verifyUrl = matches[1];
                     jqUnit.stop();
-                    verifyBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
+
+                    // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
+                    var verifyBrowser = Browser.create();
+                    verifyBrowser.visit(verifyUrl).then(function () {
                         jqUnit.start();
                         isBrowserSane(jqUnit, verifyBrowser);
+
+                        // A "success" message should be visible
+                        var feedback = verifyBrowser.window.$(".success");
+                        jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+
+                        // There should be no alerts
+                        var alert = verifyBrowser.window.$(".alert");
+                        jqUnit.assertUndefined("There should not be an alert...", alert.html());
+
+                        // Log in using the new account
                         jqUnit.stop();
+                        verifyBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
+                            jqUnit.start();
+                            isBrowserSane(jqUnit, verifyBrowser);
+                            jqUnit.stop();
 
-                        verifyBrowser.fill("username", "reset")
-                            .fill("password", timestamp)
-                            .pressButton("Log In", function () {
-                                jqUnit.start();
-                                isBrowserSane(jqUnit, verifyBrowser);
+                            verifyBrowser.fill("username", "reset")
+                                .fill("password", timestamp)
+                                .pressButton("Log In", function () {
+                                    jqUnit.start();
+                                    isBrowserSane(jqUnit, verifyBrowser);
 
-                                // The login form should no longer be visible
-                                var loginForm = verifyBrowser.window.$(".login-form");
-                                jqUnit.assertNotUndefined("There should be a login form...", loginForm.html());
-                                jqUnit.assertEquals("The login form should not be hidden...", "none", loginForm.css("display"));
+                                    // The login form should no longer be visible
+                                    var loginForm = verifyBrowser.window.$(".login-form");
+                                    jqUnit.assertNotUndefined("There should be a login form...", loginForm.html());
+                                    jqUnit.assertEquals("The login form should not be hidden...", "none", loginForm.css("display"));
 
-                                // A "success" message should be visible
-                                var feedback = verifyBrowser.window.$(".success");
-                                jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                                    // A "success" message should be visible
+                                    var feedback = verifyBrowser.window.$(".success");
+                                    jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
 
-                                // There should be no alerts
-                                var alert = verifyBrowser.window.$(".alert");
-                                jqUnit.assertUndefined("There should not be any alerts...", alert.html());
-                            });
+                                    // There should be no alerts
+                                    var alert = verifyBrowser.window.$(".alert");
+                                    jqUnit.assertUndefined("There should not be any alerts...", alert.html());
+                                });
+                        });
                     });
-                });
-            }
+                }
+            });
+
+            // send the email source to the parser
+            mailparser.write(content);
+            mailparser.end();
         });
 
         browser.visit(harness.express.options.config.express.baseUrl + "content/signup").then(function () {
