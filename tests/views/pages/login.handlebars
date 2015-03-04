@@ -4,31 +4,52 @@
 
         {{>common-includes}}
 
-        <!-- Bring in client library being tested -->
+        <!-- Bring in client libraries being tested -->
         <script type="text/javascript" src="/js/client/login.js"></script>
+        <script type="text/javascript" src="/js/client/controls.js"></script>
     </head>
     <body>
+        <!-- User controls -->
+        <div class="row">
+            <div class="column small-offset-9 small-3">
+                {{>user-controls}}
+            </div>
+        </div>
+
         <!-- Sample login form with all required markup -->
+        <div class="row">
+            <div class="column small-offset-4 small-4 login-viewport">
+                <div class="login-viewport">
 
-        <div class="column small-offset-4 small-4 login-viewport">
-            <div class="login-viewport">
-
-                <div class="login-message">
-                    <p>Please enter your username and password to log in.</p>
+                    <div class="login-message">
+                        <p>Please enter your username and password to log in.</p>
+                    </div>
+                    {{>login-form}}
                 </div>
-                {{>login-form}}
             </div>
         </div>
 
         <!-- configure and instantiate our module -->
         <script type="text/javascript">
             var login = gpii.express.couchuser.frontend.login("body", {
+                model: {
+                    user: {{#if req.session.user}}{{{jsonify req.session.user }}}{{else}}null{{/if}}
+                },
                 components: {
                     templates: {
                         type:    "gpii.templates.hb.client",
                         options: {
                             model: {
                                 "templateUrl": "/hbs"
+                            }
+                        }
+                    },
+                    controls: {
+                        type:    "gpii.express.couchuser.frontend.controls",
+                        container: "body",
+                        options: {
+                            model: {
+                                user: "{login}.model.user"
                             }
                         }
                     }

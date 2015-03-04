@@ -72,6 +72,7 @@
             }
         },
         model: {
+            user: null,
             "templates": {
                 "error":   "common-error",
                 "success": "common-success",
