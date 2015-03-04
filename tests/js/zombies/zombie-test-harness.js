@@ -76,24 +76,17 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     adminRoles: [ "admin"]
                 },
                 components: {
-                    user: {
-                        type: "gpii.express.couchuser.server",
-                        options: {
-                            modules: {
-                                json: {
-                                    type: "gpii.express.middleware.bodyparser.json"
-                                },
-                                urlencoded: {
-                                    type: "gpii.express.middleware.bodyparser.urlencoded"
-                                },
-                                cookieparser: {
-                                    type: "gpii.express.middleware.cookieparser"
-                                },
-                                session: {
-                                    type: "gpii.express.middleware.session"
-                                }
-                            }
-                        }
+                    json: {
+                        type: "gpii.express.middleware.bodyparser.json"
+                    },
+                    urlencoded: {
+                        type: "gpii.express.middleware.bodyparser.urlencoded"
+                    },
+                    cookieparser: {
+                        type: "gpii.express.middleware.cookieparser"
+                    },
+                    session: {
+                        type: "gpii.express.middleware.session"
                     },
                     modules: {
                         type:  "gpii.express.router.static",
@@ -130,6 +123,10 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         options: {
                             path: "/hbs"
                         }
+                    },
+                    // For some reason, we need to load "user" relatively late so that all the middleware upstream (notably body parsing) is in place
+                    user: {
+                        type: "gpii.express.couchuser.server"
                     }
                 }
             }

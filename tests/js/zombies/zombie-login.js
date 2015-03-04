@@ -6,7 +6,7 @@
 var fluid      = fluid || require("infusion");
 var gpii       = fluid.registerNamespace("gpii");
 
-//var jqUnit     = fluid.require("jqUnit");
+var jqUnit     = fluid.require("jqUnit");
 var Browser    = require("zombie");
 
 var isBrowserSane = require("./browser-sanity.js");
@@ -81,4 +81,4 @@ function runTests() {
 
 }
 
-//runTests();
+runTests();
