@@ -15,7 +15,7 @@
 
         // Our user handling library doesn't offer password confirmation, so we have to do it ourselves for now
         if (password !== confirm) {
-            that.displayError(that, null, null, "The passwords you have entered don't match.");
+            that.displayError(null, null, "The passwords you have entered don't match.");
             return;
         }
 
