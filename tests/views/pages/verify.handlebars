@@ -19,7 +19,7 @@
         <script type="text/javascript">
             var verify = gpii.express.couchuser.frontend.verify("body", {
                 model: {
-                    "code": {{{jsonify req.params.code }}}
+                    "code": {{{jsonify req.query.code }}}
                 },
                 components: {
                     templates: {

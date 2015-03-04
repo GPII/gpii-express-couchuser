@@ -142,13 +142,13 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse = 
 // Listen for the email with the verification code and launch the verification request
 gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function(signupRequest, verificationRequest, testEnvironment) {
     var content = fs.readFileSync(testEnvironment.smtp.mailServer.options.messageFile);
-    var verificationCodeRegexp = new RegExp("content/verify/([a-z0-9-]+)", "i");
+    var verificationCodeRegexp = new RegExp("content/verify?code=([a-z0-9-]+)", "i");
     var matches = content.toString().match(verificationCodeRegexp);
 
     jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
 
     signupRequest.code = matches[1];
-    var path = "/api/user/verify/" + signupRequest.code;
+    var path = "/api/user/verify?code=" + signupRequest.code;
 
     // I can't fix this with the model, so I have to override it completely
     verificationRequest.options.path = path;
