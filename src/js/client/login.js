@@ -54,6 +54,7 @@
     };
 
     gpii.express.couchuser.frontend.login.refresh = function(that) {
+        that.templates.replaceWith(that.locate("message"), that.model.templates.message, that.model.data);
         that.templates.replaceWith(that.locate("form"), that.model.templates.form, that.model.data);
         that.events.markupLoaded.fire();
     };
@@ -76,7 +77,8 @@
             "templates": {
                 "error":   "common-error",
                 "success": "common-success",
-                "form":    "login-form"
+                "form":    "login-form",
+                "message": "login-message"
             }
         },
         loginUrl: "/api/user/signin",
@@ -108,6 +110,13 @@
             },
             "init": {
                 funcName: "{templates}.loadTemplates"
+            }
+        },
+        modelListeners: {
+            user: {
+                func: "gpii.express.couchuser.frontend.login.refresh",
+                excludeSource: "init",
+                args: [ "{that}"]
             }
         },
         listeners: {

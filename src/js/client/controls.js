@@ -25,6 +25,14 @@
         }
     };
 
+    gpii.express.couchuser.frontend.controls.handleLogoutKeys = function(that, event) {
+        switch(event.keyCode) {
+            case 13: // enter
+                that.logout();
+                break;
+        }
+    };
+
     gpii.express.couchuser.frontend.controls.toggleMenu = function(that) {
         var toggle = that.locate("toggle");
         var menu   = that.locate("menu");
@@ -42,10 +50,9 @@
     gpii.express.couchuser.frontend.controls.logout = function(that) {
         // Fire the REST call that logs a user out, refresh afterward
         var settings = {
-            type:    "POST",
-            url:     that.options.apiUrl + "/signout",
-            success: that.handleLogout,
-            error:   that.handleLogout
+            type:     "POST",
+            url:      that.options.apiUrl + "/signout",
+            complete: that.handleLogout
         };
         $.ajax(settings);
     };
@@ -95,9 +102,17 @@
                 funcName: "gpii.express.couchuser.frontend.controls.logout",
                 args:     [ "{that}"]
             },
+            handleLogout: {
+                funcName: "gpii.express.couchuser.frontend.controls.handleLogout",
+                args:     ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
             toggleMenu: {
                 funcName: "gpii.express.couchuser.frontend.controls.toggleMenu",
                 args:     [ "{that}"]
+            },
+            handleLogoutKeys: {
+                funcName: "gpii.express.couchuser.frontend.controls.handleLogoutKeys",
+                args:     [ "{that}", "{arguments}.0"]
             },
             handleMenuKeys: {
                 funcName: "gpii.express.couchuser.frontend.controls.handleMenuKeys",
@@ -112,12 +127,23 @@
             markupLoaded: null
         },
         listeners: {
-            onCreate: [
+            "{templates}.events.templatesLoaded": [
                 {
-                    funcName: "{that}.events.markupLoaded.fire"
+                    funcName: "gpii.express.couchuser.frontend.controls.refresh",
+                    args:     ["{that}"]
                 }
             ],
             markupLoaded: [
+                {
+                    "this":   "{that}.dom.logout",
+                    "method": "click",
+                    "args":   "{that}.logout"
+                },
+                {
+                    "this":   "{that}.dom.logout",
+                    "method": "keydown",
+                    "args":   "{that}.handleLogoutKeys"
+                },
                 {
                     "this":   "{that}.dom.toggle",
                     "method": "click",

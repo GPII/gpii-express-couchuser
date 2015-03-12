@@ -19,10 +19,7 @@
         <div class="row">
             <div class="column small-offset-4 small-4 login-viewport">
                 <div class="login-viewport">
-
-                    <div class="login-message">
-                        <p>Please enter your username and password to log in.</p>
-                    </div>
+                    {{>login-message}}
                     {{>login-form}}
                 </div>
             </div>
@@ -47,6 +44,9 @@
                         type:    "gpii.express.couchuser.frontend.controls",
                         container: "body",
                         options: {
+                            components: {
+                                "templates": "{gpii.express.couchuser.frontend.login}.templates"
+                            },
                             model: {
                                 user: "{login}.model.user"
                             }
