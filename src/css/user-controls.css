@@ -1,0 +1,15 @@
+/* example CSS file with handles for all classes used in the controls (only those used in the demos are uncommented). */
+.user-menu {
+    margin-top: 0px;
+    border: 1px solid #cccccc;
+    padding: 1em;
+    position: absolute;
+    top: 3em;
+    z-index: 999;
+    width: 90%;
+}
+
+
+.user-controls .button {
+    margin-bottom: 0px;
+}

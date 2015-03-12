@@ -7,6 +7,38 @@
 
     //TODO:  Bind this so that we can update ourselves if the user changes in the background
 
+    gpii.express.couchuser.frontend.controls.handleMenuKeys = function(that, event) {
+        switch(event.keyCode) {
+            case 27: // escape
+                that.toggleMenu();
+                break;
+        }
+
+        // TODO:  Eventually, we may want to take over control of "natural" arrow key handling using event.preventDefault()
+    };
+
+    gpii.express.couchuser.frontend.controls.handleToggleKeys = function(that, event) {
+        switch(event.keyCode) {
+            case 13: // enter
+                that.toggleMenu();
+                break;
+        }
+    };
+
+    gpii.express.couchuser.frontend.controls.toggleMenu = function(that) {
+        var toggle = that.locate("toggle");
+        var menu   = that.locate("menu");
+
+        if ($(menu).is(":hidden")) {
+            menu.show();
+            menu.focus();
+        }
+        else {
+            menu.hide();
+            toggle.focus();
+        }
+    };
+
     gpii.express.couchuser.frontend.controls.logout = function(that) {
         // Fire the REST call that logs a user out, refresh afterward
         var settings = {
@@ -26,6 +58,8 @@
     gpii.express.couchuser.frontend.controls.refresh = function(that) {
         if (that.templates) {
             that.templates.replaceWith(that.locate("controls"), that.options.templateName, that.model);
+
+            that.events.markupLoaded.fire();
         }
         else {
             console.log("Something is really wrong, user controls should always have a 'templates' sub-component.");
@@ -37,10 +71,10 @@
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         templateName: "user-controls",
         selectors: {
-            controls:  ".user-controls",
-            badge:     ".user-badge",
-            menu:      ".user-menu",
-            logout:    ".user-menu-logout"
+            controls: ".user-controls",
+            menu:     ".user-menu",
+            logout:   ".user-menu-logout",
+            toggle:   ".user-controls-toggle"
         },
         components: {
             templates: {
@@ -53,20 +87,51 @@
         modelListeners: {
             user: {
                 funcName: "gpii.express.couchuser.frontend.controls.refresh",
-                args: ["{that}"]
+                args:     ["{that}"]
             }
         },
         invokers: {
             logout: {
                 funcName: "gpii.express.couchuser.frontend.controls.logout",
-                args: [ "{that}"]
+                args:     [ "{that}"]
+            },
+            toggleMenu: {
+                funcName: "gpii.express.couchuser.frontend.controls.toggleMenu",
+                args:     [ "{that}"]
+            },
+            handleMenuKeys: {
+                funcName: "gpii.express.couchuser.frontend.controls.handleMenuKeys",
+                args:     [ "{that}", "{arguments}.0"]
+            },
+            handleToggleKeys: {
+                funcName: "gpii.express.couchuser.frontend.controls.handleToggleKeys",
+                args:     [ "{that}", "{arguments}.0"]
             }
+        },
+        events: {
+            markupLoaded: null
         },
         listeners: {
             onCreate: [
                 {
-                    funcName: "gpii.express.couchuser.frontend.controls.refresh",
-                    args:     "{that}"
+                    funcName: "{that}.events.markupLoaded.fire"
+                }
+            ],
+            markupLoaded: [
+                {
+                    "this":   "{that}.dom.toggle",
+                    "method": "click",
+                    "args":   "{that}.toggleMenu"
+                },
+                {
+                    "this":   "{that}.dom.toggle",
+                    "method": "keydown",
+                    "args":   "{that}.handleToggleKeys"
+                },
+                {
+                    "this":   "{that}.dom.menu",
+                    "method": "keydown",
+                    "args":   "{that}.handleMenuKeys"
                 }
             ]
         }

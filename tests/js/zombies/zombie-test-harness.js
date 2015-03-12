@@ -16,7 +16,7 @@ require("../../../src/js/server");
 fluid.registerNamespace("gpii.express.couchuser.tests.harness");
 
 var bowerDir        = path.resolve(__dirname, "../../../bower_components");
-var jsDir           = path.resolve(__dirname, "../../../src/js");
+var srcDir          = path.resolve(__dirname, "../../../src");
 var mailTemplateDir = path.resolve(__dirname, "../../templates");
 var modulesDir      = path.resolve(__dirname, "../../../node_modules");
 // TODO: Uncomment this out when we get pouch working
@@ -98,8 +98,8 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     js: {
                         type:  "gpii.express.router.static",
                         options: {
-                            path:    "/js",
-                            content: jsDir
+                            path:    "/",
+                            content: srcDir
                         }
                     },
                     bc: {
