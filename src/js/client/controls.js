@@ -7,8 +7,8 @@
 
     //TODO:  Bind this so that we can update ourselves if the user changes in the background
 
-    gpii.express.couchuser.frontend.controls.handleMenuKeys = function(that, event) {
-        switch(event.keyCode) {
+    gpii.express.couchuser.frontend.controls.handleMenuKeys = function (that, event) {
+        switch (event.keyCode) {
             case 27: // escape
                 that.toggleMenu();
                 break;
@@ -17,23 +17,23 @@
         // TODO:  Eventually, we may want to take over control of "natural" arrow key handling using event.preventDefault()
     };
 
-    gpii.express.couchuser.frontend.controls.handleToggleKeys = function(that, event) {
-        switch(event.keyCode) {
+    gpii.express.couchuser.frontend.controls.handleToggleKeys = function (that, event) {
+        switch (event.keyCode) {
             case 13: // enter
                 that.toggleMenu();
                 break;
         }
     };
 
-    gpii.express.couchuser.frontend.controls.handleLogoutKeys = function(that, event) {
-        switch(event.keyCode) {
+    gpii.express.couchuser.frontend.controls.handleLogoutKeys = function (that, event) {
+        switch (event.keyCode) {
             case 13: // enter
                 that.logout();
                 break;
         }
     };
 
-    gpii.express.couchuser.frontend.controls.toggleMenu = function(that) {
+    gpii.express.couchuser.frontend.controls.toggleMenu = function (that) {
         var toggle = that.locate("toggle");
         var menu   = that.locate("menu");
 
@@ -47,7 +47,7 @@
         }
     };
 
-    gpii.express.couchuser.frontend.controls.logout = function(that) {
+    gpii.express.couchuser.frontend.controls.logout = function (that) {
         // Fire the REST call that logs a user out, refresh afterward
         var settings = {
             type:     "POST",
@@ -57,19 +57,19 @@
         $.ajax(settings);
     };
 
-    gpii.express.couchuser.frontend.controls.handleLogout = function(that) {
+    gpii.express.couchuser.frontend.controls.handleLogout = function (that) {
         that.applier.change("user", null);
     };
 
     // Update markup and wiring after a change in user status (login/logout, profile update)
-    gpii.express.couchuser.frontend.controls.refresh = function(that) {
+    gpii.express.couchuser.frontend.controls.refresh = function (that) {
         if (that.templates) {
             that.templates.replaceWith(that.locate("controls"), that.options.templateName, that.model);
 
             that.events.markupLoaded.fire();
         }
         else {
-            console.log("Something is really wrong, user controls should always have a 'templates' sub-component.");
+            fluid.log("I don't yet have a templates sub-component, can't process refresh().");
         }
     };
 
