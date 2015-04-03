@@ -47,29 +47,29 @@
             console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
         }
 
-        that.templates.html(that.locate("message"),"common-error", { message: message });
+        that.templates.html(that.locate("message"), that.options.templates.error, { message: message });
     };
 
-    gpii.express.couchuser.frontend.signup.displayReceipt = function(that, responseData) {
+    gpii.express.couchuser.frontend.signup.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
-            that.applier.change("user",jsonData.user);
+            that.applier.change("user", jsonData.user);
             that.locate("form").hide();
 
-            that.templates.html(that.locate("message"),"success", { message:"You have created an account. Check your email for details about verifying your new account." });
+            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You have created an account. Check your email for details about verifying your new account." });
         }
         else {
-            that.templates.html(that.locate("message"),"common-error", { message: jsonData.message });
+            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
         }
     };
 
-    gpii.express.couchuser.frontend.signup.refresh = function(that) {
-        that.templates.replaceWith(that.locate("form"),"signup-form", that.model);
+    gpii.express.couchuser.frontend.signup.refresh = function (that) {
+        that.templates.replaceWith(that.locate("form"), that.options.templates.form, that.model);
         that.events.markupLoaded.fire();
     };
 
     // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.signup.init = function(that) {
+    gpii.express.couchuser.frontend.signup.init = function (that) {
         that.templates.loadTemplates();
         that.events.markupLoaded.fire();
     };
@@ -77,6 +77,11 @@
     fluid.defaults("gpii.express.couchuser.frontend.signup", {
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         apiUrl: "/api/user",
+        templates: {
+            success: "success",
+            error:   "common-error",
+            form:    "signup-form"
+        },
         components: {
             templates: {
                 "type": "gpii.templates.hb.client"

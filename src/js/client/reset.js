@@ -28,7 +28,7 @@
         }
         // TODO:  Add support for password validation, using a module common to this and the signup form.
         else {
-            that.templates.html(that.locate("message"),"common-error", { message: "The passwords you entered do not match." });
+            that.templates.html(that.locate("message"), that.options.templates.error, { message: "The passwords you entered do not match." });
         }
     };
 
@@ -43,7 +43,7 @@
             console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
         }
 
-        that.templates.html(that.locate("message"),"common-error", { message: message });
+        that.templates.html(that.locate("message"), that.options.templates.error, { message: message });
     };
 
     gpii.express.couchuser.frontend.reset.displayReceipt = function (that, responseData) {
@@ -52,15 +52,15 @@
             that.applier.change("user", jsonData.user);
             that.locate("form").hide();
 
-            that.templates.html(that.locate("message"),"success", { message:"You have successfully reset your password." });
+            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You have successfully reset your password." });
         }
         else {
-            that.templates.html(that.locate("message"),"common-error", { message: jsonData.message });
+            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
         }
     };
 
     gpii.express.couchuser.frontend.reset.refresh = function (that) {
-        that.templates.replaceWith(that.locate("form"),"reset-form", that.model);
+        that.templates.replaceWith(that.locate("form"), that.options.templates.form, that.model);
         that.events.markupLoaded.fire();
     };
 
@@ -74,59 +74,64 @@
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             templates: {
-                "type": "gpii.templates.hb.client"
+                type: "gpii.templates.hb.client"
             }
+        },
+        templates: {
+            success: "success",
+            error:   "common-error",
+            form:    "reset-form"
         },
         apiUrl: "/api/user",
         selectors: {
-            "form":     ".reset-form",
-            "message":  ".reset-message",
-            "viewport": ".reset-viewport",
-            "code":     "input[name='code']",
-            "confirm":  "input[name='confirm']",
-            "password": "input[name='password']"
+            form:     ".reset-form",
+            message:  ".reset-message",
+            viewport: ".reset-viewport",
+            code:     "input[name='code']",
+            confirm:  "input[name='confirm']",
+            password: "input[name='password']"
         },
         events: {
-            "submit":       "preventable",
-            "refresh":      "preventable",
-            "markupLoaded": "preventable"
+            submit:       "preventable",
+            refresh:      "preventable",
+            markupLoaded: "preventable"
         },
         invokers: {
-            "submit": {
+            submit: {
                 funcName: "gpii.express.couchuser.frontend.reset.submit",
                 args: [ "{that}", "{arguments}.0"]
             },
-            "displayError": {
+            displayError: {
                 funcName: "gpii.express.couchuser.frontend.reset.displayError",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
-            "displayReceipt": {
+            displayReceipt: {
                 funcName: "gpii.express.couchuser.frontend.reset.displayReceipt",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
-            "init": {
+            init: {
                 funcName: "{templates}.loadTemplates"
             }
         },
         listeners: {
             onCreate: [
                 {
-                    "funcName": "gpii.express.couchuser.frontend.reset.init",
-                    "args":     "{that}"
+                    funcName: "gpii.express.couchuser.frontend.reset.init",
+                    args:     "{that}"
                 }
             ],
-            "markupLoaded": [
+            markupLoaded: [
                 {
                     "this": "{that}.dom.form",
                     method: "submit",
                     args:   "{that}.submit"
                 }
             ],
-            "submit": {
+            submit: {
                 func: "gpii.express.couchuser.frontend.reset.submit",
                 args: [ "{that}"]
             },
-            "refresh": {
+            refresh: {
                 func: "gpii.express.couchuser.frontend.reset.refresh",
                 args: [ "{that}"]
             }

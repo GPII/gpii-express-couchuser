@@ -34,7 +34,7 @@
             console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
         }
 
-        that.templates.html(that.locate("message"), that.model.templates.error, { "message": message });
+        that.templates.html(that.locate("message"), that.options.templates.error, { "message": message });
     };
 
     gpii.express.couchuser.frontend.login.displayReceipt = function (that, responseData) {
@@ -43,19 +43,19 @@
             that.applier.change("user", jsonData.user);
 
             that.locate("form").hide();
-            that.templates.html(that.locate("message"), that.model.templates.success, { message: "You are now logged in as " + that.model.user.name + "." });
+            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You are now logged in as " + that.model.user.name + "." });
 
             // Anything that should refresh on login should bind to this event.
             that.events.login.fire();
         }
         else {
-            that.templates.html(that.locate("message"), that.model.templates.error, { message: jsonData.message });
+            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
         }
     };
 
-    gpii.express.couchuser.frontend.login.refresh = function(that) {
-        that.templates.replaceWith(that.locate("message"), that.model.templates.message, that.model.data);
-        that.templates.replaceWith(that.locate("form"), that.model.templates.form, that.model.data);
+    gpii.express.couchuser.frontend.login.refresh = function (that) {
+        that.templates.replaceWith(that.locate("message"), that.options.templates.message, that.model.data);
+        that.templates.replaceWith(that.locate("form"), that.options.templates.form, that.model.data);
         that.events.markupLoaded.fire();
     };
 
@@ -72,14 +72,14 @@
                 "type": "gpii.templates.hb.client"
             }
         },
+        "templates": {
+            "error":   "common-error",
+            "success": "common-success",
+            "form":    "login-form",
+            "message": "login-message"
+        },
         model: {
-            user: null,
-            "templates": {
-                "error":   "common-error",
-                "success": "common-success",
-                "form":    "login-form",
-                "message": "login-message"
-            }
+            user: null
         },
         loginUrl: "/api/user/signin",
         selectors: {
