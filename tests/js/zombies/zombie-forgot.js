@@ -1,6 +1,8 @@
 // Test the "forgot password" reset mechanism end-to-end
 "use strict";
 var fluid      = fluid || require("infusion");
+fluid.setLogging(true);
+
 var gpii       = fluid.registerNamespace("gpii");
 
 var jqUnit     = fluid.require("jqUnit");
@@ -12,19 +14,23 @@ var isBrowserSane = require("./browser-sanity.js");
 
 require("./zombie-test-harness.js");
 
-var harness = gpii.express.couchuser.tests.harness({});
+var harness = gpii.express.couchuser.tests.harness({
+    expressPort: 7533,
+    baseUrl:     "http://localhost:7533/",
+    smtpPort:    4028
+});
 
 function runTests() {
     var browser;
 
-    jqUnit.module("End-to-end functional \"forgot password\" tests...", { "setup": function() { browser = Browser.create({ continueOnError: true }); }});
+    jqUnit.module("End-to-end functional \"forgot password\" tests...", { "setup": function () { browser = new Browser({ continueOnError: true }); }});
 
-    jqUnit.asyncTest("Confirm that passwords must match...", function() {
+    jqUnit.asyncTest("Confirm that passwords must match...", function () {
         var timestamp = (new Date()).getTime();
 
         // Set up a handler to continue the process once we receive an email
-        harness.smtp.applier.change("mailHandler", function (that) {
-            var content = fs.readFileSync(that.model.messageFile);
+        harness.smtp.events.messageReceived.addListener("", function (that) {
+            var content = fs.readFileSync(that.currentMessageFile);
 
             // Get the reset code and continue the reset process
             var resetCodeRegexp = new RegExp("(http.+reset/[a-z0-9-]+)", "i");
@@ -46,7 +52,7 @@ function runTests() {
                     resetBrowser
                         .fill("password", timestamp)
                         .fill("confirm", timestamp + "x")
-                        .pressButton("Reset Password", function() {
+                        .pressButton("Reset Password", function () {
                             jqUnit.start();
                             isBrowserSane(jqUnit, resetBrowser);
 
@@ -70,14 +76,14 @@ function runTests() {
             }
         });
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
+        browser.visit(harness.options.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
 
             browser
                 .fill("email", "reset@localhost")
-                .pressButton("Send Email", function() {
+                .pressButton("Send Email", function () {
                     jqUnit.start();
                     isBrowserSane(jqUnit, browser);
 
@@ -97,17 +103,17 @@ function runTests() {
         });
     });
 
-    jqUnit.asyncTest("Try to reset a user who doesn't exist...", function() {
+    jqUnit.asyncTest("Try to reset a user who doesn't exist...", function () {
         var timestamp = (new Date()).getTime();
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
+        browser.visit(harness.options.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
 
             browser
                 .fill("email", timestamp + "@localhost")
-                .pressButton("Send Email", function() {
+                .pressButton("Send Email", function () {
                     jqUnit.start();
 
                     // The "forgot password" form should be visible
@@ -129,16 +135,16 @@ function runTests() {
         });
     });
 
-    jqUnit.asyncTest("Try to use an invalid reset code...", function() {
+    jqUnit.asyncTest("Try to use an invalid reset code...", function () {
         var timestamp = (new Date()).getTime();
-        browser.visit(harness.express.options.config.express.baseUrl + "content/reset?code=" + timestamp).then(function () {
+        browser.visit(harness.options.baseUrl + "content/reset?code=" + timestamp).then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
 
             browser.fill("password", timestamp)
                 .fill("confirm", timestamp)
-                .pressButton("Reset Password", function() {
+                .pressButton("Reset Password", function () {
                     jqUnit.start();
 
                     // The "forgot password" form should not be visible
@@ -163,19 +169,17 @@ function runTests() {
     //
     // If we have to add even one more test that works with email, we will need to refactor to use a testEnvironment
     // and testCases, as we cannot reuse a mail handler between tests.
-    jqUnit.asyncTest("Reset a user's password using the \"forgot password\" form...", function() {
+    jqUnit.asyncTest("Reset a user's password using the \"forgot password\" form...", function () {
         var timestamp = (new Date()).getTime();
 
         // Set up a handler to continue the process once we receive an email
-        harness.smtp.events.messageReceived.addListener(function(that) {
-            var content = fs.readFileSync(that.options.messageFile);
-
+        harness.smtp.events.messageReceived.addListener(function (that) {
             // This is a MIME message, it will mangle the lines and special characters unless we decode it.
             var MailParser = require("mailparser").MailParser,
                 mailparser = new MailParser();
 
             // If this ends up going any deeper, we will need to refactor using a testEnvironment and testCases.
-            mailparser.on("end", function(mailObject){
+            mailparser.on("end", function (mailObject) {
                 var content = mailObject.text;
 
                 // Get the reset code and continue the reset process
@@ -188,8 +192,8 @@ function runTests() {
                     jqUnit.stop();
 
                     // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
-                    var resetBrowser = Browser.create();
-                    resetBrowser.visit(resetUrl).then(function(){
+                    var resetBrowser = new Browser();
+                    resetBrowser.visit(resetUrl).then(function () {
                         jqUnit.start();
                         isBrowserSane(jqUnit, resetBrowser);
                         jqUnit.stop();
@@ -197,7 +201,7 @@ function runTests() {
                         // Fill out the form
                         resetBrowser.fill("password", timestamp)
                             .fill("confirm", timestamp)
-                            .pressButton("Reset Password", function() {
+                            .pressButton("Reset Password", function () {
                                 jqUnit.start();
                                 isBrowserSane(jqUnit, resetBrowser);
 
@@ -216,7 +220,7 @@ function runTests() {
 
                                 // Log in using the new details
                                 jqUnit.stop();
-                                resetBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
+                                resetBrowser.visit(harness.options.baseUrl + "content/login").then(function () {
                                     jqUnit.start();
                                     isBrowserSane(jqUnit, resetBrowser);
                                     jqUnit.stop();
@@ -247,18 +251,19 @@ function runTests() {
             });
 
             // send the email source to the parser
+            var content = fs.readFileSync(that.currentMessageFile);
             mailparser.write(content);
             mailparser.end();
         });
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/forgot").then(function () {
+        browser.visit(harness.options.baseUrl + "content/forgot").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
 
             browser
                 .fill("email", "reset@localhost")
-                .pressButton("Send Email", function() {
+                .pressButton("Send Email", function () {
                     jqUnit.start();
                     isBrowserSane(jqUnit, browser);
 

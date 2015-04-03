@@ -35,11 +35,11 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
             createOnEvent: "constructServer",
             options: {
                 listeners: {
-                    "started": "{testEnvironment}.events.expressStarted.fire"
+                    onStarted: "{testEnvironment}.events.expressStarted.fire"
                 },
                 config: {
                     express: {
-                        "port" :   "{testEnvironment}.options.port",
+                        port :   "{testEnvironment}.options.port",
                         baseUrl: "{testEnvironment}.options.baseUrl",
                         views:   viewDir,
                         session: {
@@ -130,7 +130,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         //    type: "gpii.express",
         //    options: {
         //        listeners: {
-        //            "started": "{testEnvironment}.events.pouchStarted.fire"
+        //            "onStarted": "{testEnvironment}.events.pouchStarted.fire"
         //        },
         //        config: {
         //            express: {
@@ -164,11 +164,9 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
             createOnEvent: "constructServer",
             options: {
                 listeners: {
-                    "ready": "{testEnvironment}.events.smtpStarted.fire"
+                    "ready": "{testEnvironment}.events.smtpReady.fire"
                 },
-                config: {
-                    port: 4029
-                }
+                port: 4029
             }
         },
         testCaseHolder: {
@@ -180,13 +178,13 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         messageReceived: null,
         expressStarted:  null,
         pouchStarted:    null,
-        smtpStarted:     null,
-        started: {
+        smtpReady:       null,
+        onReady: {
             events: {
                 expressStarted: "expressStarted",
                 // TODO:  Reenable once we get pouch working...
-                //pouchStarted:   "{pouch}.events.started",
-                smtpStarted:    "smtpStarted"
+                //pouchStarted:   "{pouch}.events.onStarted",
+                smtpReady:      "smtpReady"
             }
         }
     }

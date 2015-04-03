@@ -28,24 +28,37 @@ var viewDir         = path.resolve(__dirname, "../../views");
 // For now, we use our local couch instance directly.
 fluid.defaults("gpii.express.couchuser.tests.harness", {
     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+    expressPort: 7533,
+    baseUrl:     "http://localhost:7533",
+    smtpPort:    4082,
     members: {
         ready: false,
-        started: false
+        onReady: false
     },
     events: {
-        started: null
-    },
-    listeners: {
-        "{express}.events.started": "{harness}.events.started.fire"
+        expressStarted:  null,
+        pouchStarted:    null,
+        smtpReady:       null,
+        onReady: {
+            events: {
+                expressStarted: "expressStarted",
+                // TODO:  Reenable once we get pouch working...
+                //pouchStarted:   "{pouch}.events.onStarted",
+                smtpReady:      "smtpReady"
+            }
+        }
     },
     components: {
         express: {
             type: "gpii.express",
             options: {
+                listeners: {
+                    onStarted: "{harness}.events.expressStarted.fire"
+                },
                 config: {
                     express: {
-                        port :   7533,
-                        baseUrl: "http://localhost:7533/",
+                        port :   "{harness}.options.expressPort",
+                        baseUrl: "{harness}.options.baseUrl",
                         views:   viewDir,
                         session: {
                             secret: "Printer, printer take a hint-ter."
@@ -53,7 +66,7 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     },
                     app: {
                         name: "GPII Express Couchuser Test Server",
-                        url: "http://localhost:7533/"
+                        url:  "{harness}.options.baseUrl"
                     },
                     users: "http://localhost:5984/_users",
                     request_defaults: {
@@ -67,7 +80,7 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         service: "SMTP",
                         SMTP: {
                             host: "localhost",
-                            port: 4025
+                            port: "{harness}.options.smtpPort"
                         },
                         templateDir: mailTemplateDir
                     },
@@ -134,8 +147,9 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
         smtp: {
             type: "gpii.test.mail.smtp",
             options: {
-                config: {
-                    port: 4025
+                port: "{harness}.options.smtpPort",
+                listeners: {
+                    "ready": "{harness}.events.smtpReady.fire"
                 }
             }
         }

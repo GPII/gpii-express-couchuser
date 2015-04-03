@@ -1,10 +1,17 @@
 "use strict";
+var fluid = fluid || require("infusion");
+
 var testFiles = [
     "./server-tests.js",
     "./zombie-tests.js"
 ];
 
-testFiles.forEach(function(file){
-    require(file);
+var tasks = [];
+testFiles.forEach(function (file) {
+    tasks.push(function () {
+            require(file);
+        }
+    );
 });
 
+fluid.promise.sequence(tasks).then(function () { console.log("Finished with all Zombie tests..."); });

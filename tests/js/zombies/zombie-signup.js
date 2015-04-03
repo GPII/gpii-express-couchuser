@@ -4,6 +4,8 @@
 
 "use strict";
 var fluid         = fluid || require("infusion");
+fluid.setLogging(true);
+
 var gpii          = fluid.registerNamespace("gpii");
 
 var jqUnit        = fluid.require("jqUnit");
@@ -15,20 +17,24 @@ var isBrowserSane = require("./browser-sanity.js");
 
 require("./zombie-test-harness.js");
 
-var harness = gpii.express.couchuser.tests.harness({});
+var harness = gpii.express.couchuser.tests.harness({
+    expressPort: 7593,
+    baseUrl:     "http://localhost:7593/",
+    smtpPort:    4043
+});
 
 function runTests() {
     var browser;
 
-    jqUnit.module("End-to-end functional signup tests...", { "setup": function() { browser = Browser.create({ continueOnError: true }); } });
+    jqUnit.module("End-to-end functional signup tests...", { "setup": function () { browser = new Browser({ continueOnError: true }); } });
 
-    jqUnit.asyncTest("Try to create a user with the same address as an existing user...", function() {
+    jqUnit.asyncTest("Try to create a user with the same address as an existing user...", function () {
         var timestamp = (new Date()).getTime();
         var username  = "user-" + timestamp;
         var password  = "pass-" + timestamp;
         var email     = "admin@localhost";
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/signup").then(function () {
+        browser.visit(harness.options.baseUrl + "content/signup").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -38,7 +44,7 @@ function runTests() {
                 .fill("password", password)
                 .fill("confirm",  password)
                 .fill("email", email)
-                .pressButton("Sign Up", function() {
+                .pressButton("Sign Up", function () {
                     jqUnit.start();
 
                     var signupForm = browser.window.$(".signup-form");
@@ -57,13 +63,13 @@ function runTests() {
         });
     });
 
-    jqUnit.asyncTest("Try to create a user with mismatching passwords...", function() {
+    jqUnit.asyncTest("Try to create a user with mismatching passwords...", function () {
         var timestamp = (new Date()).getTime();
         var username  = "user-" + timestamp;
         var password  = "pass-" + timestamp;
         var email     = "email-" + timestamp + "@localhost";
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/signup").then(function () {
+        browser.visit(harness.options.baseUrl + "content/signup").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -73,7 +79,7 @@ function runTests() {
                 .fill("password", password)
                 .fill("confirm",  password + "-different")
                 .fill("email", email)
-                .pressButton("Sign Up", function() {
+                .pressButton("Sign Up", function () {
                     jqUnit.start();
                     isBrowserSane(jqUnit, browser);
 
@@ -96,9 +102,9 @@ function runTests() {
         });
     });
 
-    jqUnit.asyncTest("Try to use an invalid verification code...", function() {
+    jqUnit.asyncTest("Try to use an invalid verification code...", function () {
         var timestamp = (new Date()).getTime();
-        browser.visit(harness.express.options.config.express.baseUrl + "content/verify?code=" + timestamp).then(function () {
+        browser.visit(harness.options.baseUrl + "content/verify?code=" + timestamp).then(function () {
             jqUnit.start();
             // A "success" message should not be visible
             var feedback = browser.window.$(".success");
@@ -113,9 +119,9 @@ function runTests() {
         });
     });
 
-    // This test is the only one that requires a mailhandler.
+    // This test is the only one that requires a mail handler.
     // If we have to add even one more, we'll have to look at refactoring to use a testEnvironment and testHarness, so that the mail server is never reused between tests.
-    jqUnit.asyncTest("Create and verify a new user...", function() {
+    jqUnit.asyncTest("Create and verify a new user...", function () {
         var timestamp = (new Date()).getTime();
         var username  = "user-" + timestamp;
         var password  = "pass-" + timestamp;
@@ -123,17 +129,15 @@ function runTests() {
 
         // Set up a handler to continue the process once we receive an email
         harness.smtp.events.messageReceived.addListener(function (that) {
-            var content = fs.readFileSync(that.options.messageFile);
-
             var MailParser = require("mailparser").MailParser,
                 mailparser = new MailParser();
 
             // If this ends up going any deeper, we should refactor to use a testEnvironment and testCaseHolder
-            mailparser.on("end", function(mailObject){
+            mailparser.on("end", function (mailObject) {
                 var content = mailObject.text;
 
                 // Get the reset code and continue the reset process
-                var verifyCodeRegexp = new RegExp("(http.+verify?code=[a-z0-9-]+)", "i");
+                var verifyCodeRegexp = new RegExp("(http.+verify\\?code=[a-z0-9-]+)", "i");
                 var matches = content.toString().match(verifyCodeRegexp);
 
                 jqUnit.assertNotNull("There should be a verification code in the email sent to the user.", matches);
@@ -142,7 +146,7 @@ function runTests() {
                     jqUnit.stop();
 
                     // We need a separate browser to avoid clobbering the instance used to generate this email, which still needs to check the results of its activity.
-                    var verifyBrowser = Browser.create();
+                    var verifyBrowser = new Browser();
                     verifyBrowser.visit(verifyUrl).then(function () {
                         jqUnit.start();
                         isBrowserSane(jqUnit, verifyBrowser);
@@ -157,7 +161,7 @@ function runTests() {
 
                         // Log in using the new account
                         jqUnit.stop();
-                        verifyBrowser.visit( harness.express.options.config.express.baseUrl + "content/login").then(function () {
+                        verifyBrowser.visit(harness.options.baseUrl + "content/login").then(function () {
                             jqUnit.start();
                             isBrowserSane(jqUnit, verifyBrowser);
                             jqUnit.stop();
@@ -187,11 +191,12 @@ function runTests() {
             });
 
             // send the email source to the parser
+            var content = fs.readFileSync(that.currentMessageFile);
             mailparser.write(content);
             mailparser.end();
         });
 
-        browser.visit(harness.express.options.config.express.baseUrl + "content/signup").then(function () {
+        browser.visit(harness.options.baseUrl + "content/signup").then(function () {
             jqUnit.start();
             isBrowserSane(jqUnit, browser);
             jqUnit.stop();
@@ -201,7 +206,7 @@ function runTests() {
                 .fill("password", password)
                 .fill("confirm",  password)
                 .fill("email", email)
-                .pressButton("Sign Up", function() {
+                .pressButton("Sign Up", function () {
                     jqUnit.start();
                     isBrowserSane(jqUnit, browser);
 

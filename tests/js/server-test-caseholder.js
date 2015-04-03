@@ -27,13 +27,13 @@ gpii.express.couchuser.test.server.caseHolder.isSaneResponse = function (respons
 };
 
 // An expander to put together a base URL and relative path
-gpii.express.couchuser.test.server.caseHolder.assembleUrl = function(baseUrl, path) {
+gpii.express.couchuser.test.server.caseHolder.assembleUrl = function (baseUrl, path) {
     var fullPath;
     // We have to be careful of double slashes (or no slashes)
-    if (baseUrl[baseUrl.length -1] === "/" && path[0] === "/") {
+    if (baseUrl[baseUrl.length - 1] === "/" && path[0] === "/") {
         fullPath = baseUrl + path.substring(1);
     }
-    else if (baseUrl[baseUrl.length -1] !== "/" && path[0] !== "/") {
+    else if (baseUrl[baseUrl.length - 1] !== "/" && path[0] !== "/") {
         fullPath = baseUrl + "/" + path;
     }
     else {
@@ -60,7 +60,7 @@ gpii.express.couchuser.test.server.caseHolder.generatePassword = function () {
 };
 
 // Each test has a function that is called when its request is issued.
-gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -71,7 +71,7 @@ gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn = function(response
     }
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -82,7 +82,7 @@ gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn = functi
     }
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -93,7 +93,7 @@ gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut = function(respons
     }
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 401);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -102,58 +102,58 @@ gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut = funct
 };
 
 
-gpii.express.couchuser.test.server.caseHolder.verifyFailedLogin = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyFailedLogin = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
     jqUnit.assertUndefined("There should not be a user returned.", data.user);
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyUnverifiedLogin = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyUnverifiedLogin = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 401);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
     jqUnit.assertUndefined("There should not be a user returned.", data.user);
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyDuplicateEmailBlocked = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyDuplicateEmailBlocked = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyIncompleteSignupBlocked = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyIncompleteSignupBlocked = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyBogusVerificationCodeBlocked = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyBogusVerificationCodeBlocked = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
 };
 
-gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
 };
 
 // Verify that the signup was successful
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse = function(signupRequest, response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse = function (signupRequest, response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 };
 
 // Listen for the email with the verification code and launch the verification request
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function(signupRequest, verificationRequest, testEnvironment) {
-    var content = fs.readFileSync(testEnvironment.smtp.mailServer.options.messageFile);
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function (signupRequest, verificationRequest, testEnvironment) {
+    var content = fs.readFileSync(testEnvironment.smtp.mailServer.currentMessageFile);
 
     var MailParser = require("mailparser").MailParser,
-        mailparser = new MailParser();
+    mailparser = new MailParser({debug: false});
 
     // If this gets any deeper, refactor to use a separate function
-    mailparser.on("end", function(mailObject){
+    mailparser.on("end", function (mailObject) {
         var content = mailObject.text;
         var verificationCodeRegexp = new RegExp("content/verify[?]code=([a-z0-9-]+)", "i");
         var matches = content.toString().match(verificationCodeRegexp);
@@ -175,14 +175,14 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function(s
 };
 
 // Listen for the results of hitting the verification link
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertTrue("The response should be 'ok'.", data.ok);
 };
 
 // Listen for the results of logging in with our verified acount
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function(signupRequest, response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function (signupRequest, response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -191,19 +191,19 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function(s
 };
 
 // Verify that a password reset request is successful
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyInitialResponse = function(resetRequest, response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullResetVerifyInitialResponse = function (resetRequest, response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 };
 
 // Listen for the email with the verification code and launch the verification request
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail = function(forgotRequest, resetRequest, testEnvironment) {
-    var content = fs.readFileSync(testEnvironment.smtp.mailServer.options.messageFile);
+gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail = function (forgotRequest, resetRequest, testEnvironment) {
+    var content = fs.readFileSync(testEnvironment.smtp.mailServer.currentMessageFile);
 
     var MailParser = require("mailparser").MailParser,
-        mailparser = new MailParser();
+    mailparser = new MailParser({ debug: false });
 
     // If this gets any deeper, refactor to use a separate function
-    mailparser.on("end", function(mailObject){
+    mailparser.on("end", function (mailObject) {
         var content = mailObject.text;
         var resetCodeRegexp = new RegExp("content/reset[?]code=([a-z0-9-]+)", "i");
         var matches = content.toString().match(resetCodeRegexp);
@@ -221,14 +221,14 @@ gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail = function(fo
 };
 
 // Listen for the results of hitting the reset link
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyResetLink = function(response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullResetVerifyResetLink = function (response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
     var data = typeof body === "string" ? JSON.parse(body) : body;
     jqUnit.assertTrue("The response should be 'ok'.", data.ok);
 };
 
 // Listen for the results of logging in with our verified acount
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyLogin = function(forgotRequest, response, body) {
+gpii.express.couchuser.test.server.caseHolder.fullResetVerifyLogin = function (forgotRequest, response, body) {
     gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 
     var data = typeof body === "string" ? JSON.parse(body) : body;
@@ -484,7 +484,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{loginRequest}.send",
@@ -531,7 +531,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{bogusLoginRequest}.send",
@@ -553,7 +553,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{unverifiedLoginRequest}.send",
@@ -575,7 +575,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{duplicateUserCreateRequest}.send",
@@ -597,7 +597,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{incompleteUserCreateRequest}.send",
@@ -619,7 +619,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{bogusVerificationRequest}.send",
@@ -641,7 +641,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{bogusResetRequest}.send",
@@ -663,7 +663,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{fullSignupInitialRequest}.send",
@@ -693,6 +693,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             event: "{fullSignupLoginRequest}.events.onComplete",
                             args: ["{fullSignupInitialRequest}", "{fullSignupLoginRequest}.nativeResponse", "{arguments}.0"]
                         }
+
                     ]
                 },
                 {
@@ -704,12 +705,13 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         {
                             listener: "fluid.identity",
-                            event: "{testEnvironment}.events.started"
+                            event: "{testEnvironment}.events.onReady"
                         },
                         {
                             func: "{fullResetForgotRequest}.send",
                             args: [ { email: "{fullResetForgotRequest}.options.user.email" } ]
                         },
+                        // If we catch this event, the timing won't work out to cache the initial response.  We can safely ignore it for now.
                         //{
                         //    listener: "gpii.express.couchuser.test.server.caseHolder.fullResetVerifyInitialResponse",
                         //    event: "{fullResetForgotRequest}.events.onComplete",
