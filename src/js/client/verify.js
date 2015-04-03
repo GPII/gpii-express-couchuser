@@ -36,7 +36,7 @@
             console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
         }
 
-        that.templates.html(that.locate("message"),"common-error", { message: message } );
+        that.templates.html(that.locate("message"), that.options.templates.error, { message: message });
     };
 
     gpii.express.couchuser.frontend.verify.displayReceipt = function (that, responseData) {
@@ -44,10 +44,10 @@
         if (jsonData && jsonData.ok) {
             that.applier.change("user", jsonData.user);
 
-            that.templates.html(that.locate("message"), "common-success", { message: "You have successfully verified your account." });
+            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You have successfully verified your account." });
         }
         else {
-            that.templates.html(that.locate("message"), "common-error", { message: jsonData.message });
+            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
         }
     };
 
@@ -60,6 +60,10 @@
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         model: {
             code: null
+        },
+        templates: {
+            success: "common-success",
+            error:   "common-error"
         },
         components: {
             templates: {
