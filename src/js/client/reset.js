@@ -49,7 +49,7 @@
     gpii.express.couchuser.frontend.reset.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
-            that.applier.change("user",jsonData.user);
+            that.applier.change("user", jsonData.user);
             that.locate("form").hide();
 
             that.templates.html(that.locate("message"),"success", { message:"You have successfully reset your password." });

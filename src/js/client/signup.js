@@ -6,7 +6,7 @@
     fluid.registerNamespace("gpii.express.couchuser.frontend.signup");
 
     // Try to log in and display the results
-    gpii.express.couchuser.frontend.signup.submit = function(that, event) {
+    gpii.express.couchuser.frontend.signup.submit = function (that, event) {
         if (event) { event.preventDefault(); }
         var name     = that.locate("name").val();
         var email    = that.locate("email").val();
@@ -37,7 +37,7 @@
         $.ajax(settings);
     };
 
-    gpii.express.couchuser.frontend.signup.displayError = function(that, jqXHR, textStatus, errorThrown) {
+    gpii.express.couchuser.frontend.signup.displayError = function (that, jqXHR, textStatus, errorThrown) {
         var message = errorThrown;
         try {
             var jsonData = JSON.parse(jqXHR.responseText);

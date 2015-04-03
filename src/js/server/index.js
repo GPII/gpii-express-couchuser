@@ -11,7 +11,7 @@ var fluid = fluid || require("infusion");
 var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.express.couchuser.server");
 
-gpii.express.couchuser.server.init = function(that) {
+gpii.express.couchuser.server.init = function (that) {
     that.options.router = require("express-user-couchdb")(that.options.config);
 };
 

@@ -42,7 +42,7 @@
     gpii.express.couchuser.frontend.verify.displayReceipt = function (that, responseData) {
         var jsonData = JSON.parse(responseData);
         if (jsonData && jsonData.ok) {
-            that.applier.change("user",jsonData.user);
+            that.applier.change("user", jsonData.user);
 
             that.templates.html(that.locate("message"), "common-success", { message: "You have successfully verified your account." });
         }

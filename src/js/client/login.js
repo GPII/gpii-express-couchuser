@@ -6,7 +6,7 @@
     fluid.registerNamespace("gpii.express.couchuser.frontend.login");
 
     // Try to log in and display the results
-    gpii.express.couchuser.frontend.login.submit = function(that, event) {
+    gpii.express.couchuser.frontend.login.submit = function (that, event) {
         // Clear out any previous feedback before submitting
         $(that.container).find(".alert-box").remove();
 
@@ -24,7 +24,7 @@
         $.ajax(settings);
     };
 
-    gpii.express.couchuser.frontend.login.displayError = function(that, jqXHR, textStatus, errorThrown) {
+    gpii.express.couchuser.frontend.login.displayError = function (that, jqXHR, textStatus, errorThrown) {
         var message = errorThrown;
         try {
             var jsonData = JSON.parse(jqXHR.responseText);
@@ -60,7 +60,7 @@
     };
 
     // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.login.init = function(that) {
+    gpii.express.couchuser.frontend.login.init = function (that) {
         that.templates.loadTemplates();
         that.events.markupLoaded.fire();
     };
