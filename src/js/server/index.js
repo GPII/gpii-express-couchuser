@@ -17,7 +17,7 @@ gpii.express.couchuser.server.init = function (that) {
 
 // We have to act very oddly to avoid problems cause by the express 3.x ness of this module
 // We are middleware, but expose a router object
-gpii.express.couchuser.server.getMiddlewareFunction = function(that) {
+gpii.express.couchuser.server.getMiddleware = function (that) {
     return that.options.router;
 };
 
@@ -39,8 +39,8 @@ fluid.defaults("gpii.express.couchuser.server", {
     },
     path:    "/api/user",
     "invokers": {
-        "getMiddlewareFunction": {
-            "funcName": "gpii.express.couchuser.server.getMiddlewareFunction",
+        "getMiddleware": {
+            "funcName": "gpii.express.couchuser.server.getMiddleware",
             "args": ["{that}"]
         }
     },
