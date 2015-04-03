@@ -40,7 +40,7 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
             //createOnEvent: "constructServer",
             options: {
                 listeners: {
-                    "started": "{testEnvironment}.events.expressStarted.fire"
+                    "onReady": "{testEnvironment}.events.expressStarted.fire"
                 },
                 config: {
                     express: {
@@ -134,7 +134,7 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
             type: "gpii.express",
             options: {
                 listeners: {
-                    "started": "{testEnvironment}.events.pouchStarted.fire"
+                    "onReady": "{testEnvironment}.events.pouchStarted.fire"
                 },
                 config: {
                     express: {
@@ -186,10 +186,10 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
         expressStarted:  null,
         pouchStarted:    null,
         smtpStarted:     null,
-        started: {
+        onReady: {
             events: {
                 expressStarted: "expressStarted",
-                pouchStarted:   "{pouch}.events.started",
+                pouchStarted:   "{pouch}.events.onStarted",
                 smtpStarted:    "smtpStarted"
             }
         }
