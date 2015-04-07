@@ -14,6 +14,18 @@ fluid.registerNamespace("gpii.express.couchuser.test.server.caseHolder");
 
 fluid.setLogging(true);
 
+// TODO:  This is meant to be used to produce a moduleSource, but is never reached because the {arguments} in the rawTests option can't be resolved.  Review with Antranig.
+gpii.express.couchuser.test.server.caseHolder.addRequiredSequences = function (sequenceStart, rawTests) {
+    var completeTests = fluid.copy(rawTests);
+
+    for (var a = 0; a < completeTests.length; a++) {
+        var test = completeTests[a];
+        test.sequence = sequenceStart.concat(test.sequence);
+    }
+
+    return completeTests;
+};
+
 // A common function to confirm that the response sent by the server meets our standards.
 gpii.express.couchuser.test.server.caseHolder.isSaneResponse = function (response, body, statusCode) {
     statusCode = statusCode ? statusCode : 200;
@@ -472,6 +484,21 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
             }
         }
     },
+
+    // TODO:  Review with Antranig
+    //moduleSource: {
+    //    funcName: "gpii.express.couchuser.test.server.caseHolder.addRequiredSequences",
+    //    args:     ["{that}.options.sequenceStart", "{that}.options.rawModules"]
+    //},
+    sequenceStart: [
+        { // This sequence point is required because of a QUnit bug - it defers the start of sequence by 13ms "to avoid any current callbacks" in its words
+            func: "{testEnvironment}.events.constructServer.fire"
+        },
+        {
+            listener: "fluid.identity",
+            event: "{testEnvironment}.events.onReady"
+        }
+    ],
     modules: [
         {
             tests: [
@@ -741,4 +768,53 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
             ]
         }
     ]
+    //,
+    // TODO:  If these are uncommented, the framework complains about not being able to resolve all {arguments} references.  Review with Antranig
+    //
+    //rawModules: [
+    //    {
+    //        tests: [
+    //            {
+    //                name: "Testing full login/logout cycle...",
+    //                type: "test",
+    //                sequence: [
+    //                    {
+    //                        func: "{loginRequest}.send",
+    //                        args: [{ name: "admin", password: "admin" }]
+    //                    },
+    //                    {
+    //                        listener: "gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn",
+    //                        event: "{loginRequest}.events.onComplete",
+    //                        args: ["{loginRequest}.nativeResponse", "{arguments}.0"]
+    //                    },
+    //                    {
+    //                        func: "{currentUserLoggedInRequest}.send",
+    //                        args: [{ name: "admin", password: "admin" }]
+    //                    },
+    //                    {
+    //                        listener: "gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn",
+    //                        event: "{currentUserLoggedInRequest}.events.onComplete",
+    //                        args: ["{currentUserLoggedInRequest}.nativeResponse", "{arguments}.0"]
+    //                    },
+    //                    {
+    //                        func: "{logoutRequest}.send"
+    //                    },
+    //                    {
+    //                        listener: "gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut",
+    //                        event: "{logoutRequest}.events.onComplete",
+    //                        args: ["{logoutRequest}.nativeResponse", "{arguments}.0"]
+    //                    },
+    //                    {
+    //                        func: "{currentUserLoggedOutRequest}.send"
+    //                    },
+    //                    {
+    //                        listener: "gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut",
+    //                        event: "{currentUserLoggedOutRequest}.events.onComplete",
+    //                        args: ["{currentUserLoggedOutRequest}.nativeResponse", "{arguments}.0"]
+    //                    }
+    //                ]
+    //            }
+    //        ]
+    //    }
+    //]
 });
