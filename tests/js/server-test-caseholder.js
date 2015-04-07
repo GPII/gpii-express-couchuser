@@ -491,8 +491,6 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
             }
         }
     },
-
-    // TODO:  Review with Antranig
     moduleSource: {
         funcName: "gpii.express.couchuser.test.server.caseHolder.addRequiredSequences",
         args:     ["{that}.options.sequenceStart", "{that}.options.rawModules"]
