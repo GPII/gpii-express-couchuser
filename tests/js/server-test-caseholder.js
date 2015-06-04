@@ -583,7 +583,7 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                     sequence: [
                         {
                             func: "{duplicateUserCreateRequest}.send",
-                            args: [{ name: "new", password: "new", email: "duhrer@localhost", roles: [] }]
+                            args: [{ name: "new", password: "new", email: "reset@localhost", roles: [] }]
                         },
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.verifyDuplicateEmailBlocked",
