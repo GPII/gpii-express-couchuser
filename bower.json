@@ -6,9 +6,6 @@
         "Tony <tony@raisingthefloor.org>"
     ],
     "description": "A series of fluid components that provide a frontend to the express-couchuser API.",
-    "moduleType": [
-        "amd"
-    ],
     "license": "See LICENSE file for details.",
     "private": true,
     "main": [
