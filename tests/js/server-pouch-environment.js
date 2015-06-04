@@ -14,10 +14,6 @@ require("gpii-mail-test");
 
 require("../../src/js/server");
 
-// We use just the request-handling bits of the kettle stack in our tests, but we include the whole thing to pick up the base grades
-//require("../../node_modules/kettle");
-//require("../../node_modules/kettle/lib/test/KettleTestUtils");
-
 var gpii = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.express.couchuser.tests.pouch.testEnvironment");
 
@@ -30,8 +26,7 @@ var userDataFile = path.resolve(__dirname, "../data/users/users.json");
 var viewDir = path.resolve(__dirname, "../views");
 
 fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
-    //gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-    gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+    gradeNames: ["fluid.eventedComponent", "autoInit"],
     port: 7532,
     baseUrl: "http://localhost/",
     components: {
@@ -175,10 +170,6 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
                 }
             }
         }
-        //,
-        //testCaseHolder: {
-        //    type: "gpii.express.couchuser.test.server.caseHolder"
-        //}
     },
     events: {
         constructServer: null,
