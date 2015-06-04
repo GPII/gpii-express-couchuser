@@ -4,6 +4,8 @@
 // Configure a testEnvironment with an express server, pouch instance, and outgoing mail server.
 "use strict";
 var fluid = fluid || require("infusion");
+fluid.setLogging(true);
+
 var path = require("path");
 
 require("gpii-express");
@@ -35,13 +37,13 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
             //createOnEvent: "constructServer",
             options: {
                 listeners: {
-                    onReady: "{testEnvironment}.events.expressStarted.fire"
+                    onStarted: "{testEnvironment}.events.expressStarted.fire"
                 },
                 config: {
                     express: {
-                        port: "{testEnvironment}.options.port",
+                        port:    "{testEnvironment}.options.port",
                         baseUrl: "{testEnvironment}.options.baseUrl",
-                        views: viewDir,
+                        views:   viewDir,
                         session: {
                             secret: "Printer, printer take a hint-ter."
                         }
@@ -51,12 +53,6 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
                         url: "{testEnvironment}.options.baseUrl"
                     },
                     users: "http://localhost:7534/_users",
-                    request_defaults: {
-                        auth: {
-                            user: "admin",
-                            pass: "admin"
-                        }
-                    },
                     email: {
                         from: "no-reply@ul.gpii.net",
                         service: "SMTP",
@@ -129,7 +125,7 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
             type: "gpii.express",
             options: {
                 listeners: {
-                    onReady: "{testEnvironment}.events.pouchStarted.fire"
+                    onStarted: "{testEnvironment}.events.pouchStarted.fire"
                 },
                 config: {
                     express: {
@@ -146,11 +142,9 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
                         type: "gpii.pouch",
                         options: {
                             path: "/",
-                            model: {
-                                databases: {
-                                    _users: {
-                                        data: userDataFile
-                                    }
+                            databases: {
+                                _users: {
+                                    data: userDataFile
                                 }
                             }
                         }
@@ -177,7 +171,7 @@ fluid.defaults("gpii.express.couchuser.tests.pouch.testEnvironment", {
         expressStarted: null,
         pouchStarted: null,
         smtpStarted: null,
-        onReady: {
+        onStarted: {
             events: {
                 expressStarted: "expressStarted",
                 pouchStarted: "{pouch}.events.onStarted",

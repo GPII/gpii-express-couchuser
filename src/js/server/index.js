@@ -13,6 +13,9 @@ fluid.registerNamespace("gpii.express.couchuser.server");
 
 gpii.express.couchuser.server.init = function (that) {
     that.options.router = require("express-user-couchdb")(that.options.config);
+
+    // Fix the monkey business that couchuser performs on the view directory location in express.
+    that.options.router.set("views", that.options.config.express.views);
 };
 
 // We have to act very oddly to avoid problems cause by the express 3.x ness of this module
@@ -23,6 +26,7 @@ gpii.express.couchuser.server.getMiddleware = function (that) {
 
 fluid.defaults("gpii.express.couchuser.server", {
     gradeNames: ["gpii.express.middleware", "autoInit"],
+    config: "{expressConfigHolder}.options.config",
     components: {
         json: {
             type: "gpii.express.middleware.bodyparser.json"
