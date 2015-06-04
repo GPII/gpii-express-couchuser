@@ -20,8 +20,9 @@
                 url:     that.options.apiUrl + "/reset",
                 success: that.displayReceipt,
                 error:   that.displayError,
-                json:    true,
-                data: { "code": code, "password": password }
+                contentType: "application/json",
+                processData: false,
+                data: JSON.stringify({ "code": code, "password": password })
             };
 
             $.ajax(settings);

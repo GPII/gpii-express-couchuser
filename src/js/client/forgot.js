@@ -15,7 +15,9 @@
             url:     that.options.apiUrl + "/forgot",
             success: that.displayReceipt,
             error:   that.displayError,
-            data: { "email": email }
+            contentType: "application/json",
+            processData: false,
+            data: JSON.stringify({ "email": email })
         };
 
         $.ajax(settings);
