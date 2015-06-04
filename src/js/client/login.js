@@ -90,10 +90,10 @@
             "password": "input[name='password']"
         },
         events: {
-            "submit":       "preventable",
-            "refresh":      "preventable",
-            "login":        "preventable",
-            "markupLoaded": "preventable"
+            "submit":       null,
+            "refresh":      null,
+            "login":        null,
+            "markupLoaded": null
         },
         invokers: {
             "submit": {

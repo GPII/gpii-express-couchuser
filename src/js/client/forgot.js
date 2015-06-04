@@ -79,9 +79,9 @@
             email:    "input[name='email']"
         },
         events: {
-            submit:       "preventable",
-            refresh:      "preventable",
-            markupLoaded: "preventable"
+            submit:       null,
+            refresh:      null,
+            markupLoaded: null
         },
         invokers: {
             submit: {

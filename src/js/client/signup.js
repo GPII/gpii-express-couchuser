@@ -97,9 +97,9 @@
             "confirm":  "input[name='confirm']"
         },
         events: {
-            "submit":       "preventable",
-            "refresh":      "preventable",
-            "markupLoaded": "preventable"
+            "submit":       null,
+            "refresh":      null,
+            "markupLoaded": null
         },
         invokers: {
             "submit": {

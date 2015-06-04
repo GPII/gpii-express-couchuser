@@ -76,8 +76,8 @@
             "message":  ".verify-message"
         },
         events: {
-            "submit":       "preventable",
-            "markupLoaded": "preventable"
+            "submit":       null,
+            "markupLoaded": null
         },
         invokers: {
             "submit": {
