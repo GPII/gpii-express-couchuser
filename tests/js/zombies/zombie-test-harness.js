@@ -19,18 +19,18 @@ var bowerDir        = path.resolve(__dirname, "../../../bower_components");
 var srcDir          = path.resolve(__dirname, "../../../src");
 var mailTemplateDir = path.resolve(__dirname, "../../templates");
 var modulesDir      = path.resolve(__dirname, "../../../node_modules");
-// TODO: Uncomment this out when we get pouch working
-//var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
+var userDataFile    = path.resolve(__dirname, "../../data/users/users.json");
 var viewDir         = path.resolve(__dirname, "../../views");
 
 
-// TODO:  Figure out why our pouch instance doesn't work with express-couchuser, and change options.config.users in the express component below
-// For now, we use our local couch instance directly.
 fluid.defaults("gpii.express.couchuser.tests.harness", {
     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
-    expressPort: 7533,
+    expressPort: 7633,
     baseUrl:     "http://localhost:7533",
-    smtpPort:    4082,
+    pouchPort:   7634,
+    pouchUrl:    "http://localhost:7534/",
+    usersUrl:    "http://localhost:7534/_users",
+    smtpPort:    4081,
     members: {
         ready: false,
         onReady: false
@@ -42,7 +42,6 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
         onReady: {
             events: {
                 expressStarted: "expressStarted",
-                // TODO:  Reenable once we get pouch working...
                 //pouchStarted:   "{pouch}.events.onStarted",
                 smtpReady:      "smtpReady"
             }
@@ -68,7 +67,7 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         name: "GPII Express Couchuser Test Server",
                         url:  "{harness}.options.baseUrl"
                     },
-                    users: "http://localhost:5984/_users",
+                    users: "{harness}.options.usersUrl",
                     request_defaults: {
                         auth: {
                             user: "admin",
@@ -152,6 +151,37 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     "ready": "{harness}.events.smtpReady.fire"
                 }
             }
-        }
+        },
+        //pouch: {
+        //    type: "gpii.express",
+        //    options: {
+        //        listeners: {
+        //            "onStarted": "{harness}.events.pouchStarted.fire"
+        //        },
+        //        config: {
+        //            express: {
+        //                "port" : "{harness}.options.pouchPort",
+        //                baseUrl: "{harness}.options.pouchUrl"
+        //            },
+        //            app: {
+        //                name: "Pouch Test Server",
+        //                url:  "{harness}.options.pouchUrl"
+        //            }
+        //        },
+        //        components: {
+        //            pouch: {
+        //                type: "gpii.pouch",
+        //                options: {
+        //                    path: "/",
+        //                    databases: {
+        //                        _users: {
+        //                            data: userDataFile
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 });

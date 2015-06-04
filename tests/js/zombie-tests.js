@@ -5,6 +5,7 @@
 "use strict";
 var fluid = fluid || require("infusion");
 
+// TODO:  When these are run together, there are errors which do not occur when they are run separately. Investigate.
 var scripts = [
     "./zombies/zombie-login.js",
     "./zombies/zombie-signup.js",

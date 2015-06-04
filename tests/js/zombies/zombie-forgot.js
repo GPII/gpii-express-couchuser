@@ -16,8 +16,11 @@ require("./zombie-test-harness.js");
 
 var harness = gpii.express.couchuser.tests.harness({
     expressPort: 7533,
-    baseUrl:     "http://localhost:7533/",
-    smtpPort:    4028
+    baseUrl:     "http://localhost:7533",
+    pouchPort:   7534,
+    pouchUrl:    "http://localhost:7534/",
+    usersUrl:    "http://localhost:7534/_users",
+    smtpPort:    4082
 });
 
 function runTests() {
