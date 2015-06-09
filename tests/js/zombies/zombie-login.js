@@ -16,7 +16,7 @@ var isBrowserSane = require("./browser-sanity.js");
 require("./zombie-test-harness.js");
 var harness = gpii.express.couchuser.tests.harness({
     expressPort: 7542,
-    baseUrl:     "http://localhost:7542",
+    baseUrl:     "http://localhost:7542/",
     pouchPort:   7524,
     pouchUrl:    "http://localhost:7524/",
     usersUrl:    "http://localhost:7524/_users",

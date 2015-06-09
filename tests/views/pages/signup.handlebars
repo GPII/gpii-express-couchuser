@@ -20,17 +20,7 @@
 
         <!-- configure and instantiate our module -->
         <script type="text/javascript">
-            var signup = gpii.express.couchuser.frontend.signup("body", {
-                components: {
-                    templates: {
-                        options: {
-                            model: {
-                                "templateUrl": "/hbs"
-                            }
-                        }
-                    }
-                }
-            });
+            var signup = gpii.express.couchuser.frontend.signup("body", {});
 
             $(document).foundation();
         </script>

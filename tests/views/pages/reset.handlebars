@@ -18,17 +18,7 @@
 
         <!-- configure and instantiate our module -->
         <script type="text/javascript">
-            var reset = gpii.express.couchuser.frontend.reset("body", {
-                components: {
-                    templates: {
-                        options: {
-                            model: {
-                                "templateUrl": "/hbs"
-                            }
-                        }
-                    }
-                }
-            });
+            var reset = gpii.express.couchuser.frontend.reset("body", {});
 
             $(document).foundation();
         </script>

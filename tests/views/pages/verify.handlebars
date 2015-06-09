@@ -20,15 +20,6 @@
             var verify = gpii.express.couchuser.frontend.verify("body", {
                 model: {
                     "code": {{{jsonify req.query.code }}}
-                },
-                components: {
-                    templates: {
-                        options: {
-                            "model": {
-                                "templateUrl": "/hbs"
-                            }
-                        }
-                    }
                 }
             });
 

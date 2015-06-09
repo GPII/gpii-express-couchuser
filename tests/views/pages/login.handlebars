@@ -32,14 +32,6 @@
                     user: {{#if req.session.user}}{{{jsonify req.session.user }}}{{else}}null{{/if}}
                 },
                 components: {
-                    templates: {
-                        type:    "gpii.templates.hb.client",
-                        options: {
-                            model: {
-                                "templateUrl": "/hbs"
-                            }
-                        }
-                    },
                     controls: {
                         type:    "gpii.express.couchuser.frontend.controls",
                         container: "body",

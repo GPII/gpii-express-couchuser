@@ -26,10 +26,10 @@ var viewDir         = path.resolve(__dirname, "../../views");
 fluid.defaults("gpii.express.couchuser.tests.harness", {
     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
     expressPort: 7633,
-    baseUrl:     "http://localhost:7533",
+    baseUrl:     "http://localhost:7633",
     pouchPort:   7634,
-    pouchUrl:    "http://localhost:7534/",
-    usersUrl:    "http://localhost:7534/_users",
+    pouchUrl:    "http://localhost:7634/",
+    usersUrl:    "http://localhost:7634/_users",
     smtpPort:    4081,
     members: {
         ready: false,
@@ -152,36 +152,36 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                 }
             }
         },
-        //pouch: {
-        //    type: "gpii.express",
-        //    options: {
-        //        listeners: {
-        //            "onStarted": "{harness}.events.pouchStarted.fire"
-        //        },
-        //        config: {
-        //            express: {
-        //                "port" : "{harness}.options.pouchPort",
-        //                baseUrl: "{harness}.options.pouchUrl"
-        //            },
-        //            app: {
-        //                name: "Pouch Test Server",
-        //                url:  "{harness}.options.pouchUrl"
-        //            }
-        //        },
-        //        components: {
-        //            pouch: {
-        //                type: "gpii.pouch",
-        //                options: {
-        //                    path: "/",
-        //                    databases: {
-        //                        _users: {
-        //                            data: userDataFile
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        pouch: {
+            type: "gpii.express",
+            options: {
+                listeners: {
+                    "onStarted": "{harness}.events.pouchStarted.fire"
+                },
+                config: {
+                    express: {
+                        "port" : "{harness}.options.pouchPort",
+                        baseUrl: "{harness}.options.pouchUrl"
+                    },
+                    app: {
+                        name: "Pouch Test Server",
+                        url:  "{harness}.options.pouchUrl"
+                    }
+                },
+                components: {
+                    pouch: {
+                        type: "gpii.pouch",
+                        options: {
+                            path: "/",
+                            databases: {
+                                _users: {
+                                    data: userDataFile
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 });

@@ -16,7 +16,7 @@ require("./zombie-test-harness.js");
 
 var harness = gpii.express.couchuser.tests.harness({
     expressPort: 7533,
-    baseUrl:     "http://localhost:7533",
+    baseUrl:     "http://localhost:7533/",
     pouchPort:   7534,
     pouchUrl:    "http://localhost:7534/",
     usersUrl:    "http://localhost:7534/_users",
@@ -26,7 +26,7 @@ var harness = gpii.express.couchuser.tests.harness({
 function runTests() {
     var browser;
 
-    jqUnit.module("End-to-end functional \"forgot password\" tests...", { "setup": function () { browser = new Browser({ continueOnError: true }); }});
+    jqUnit.module("End-to-end functional \"forgot password\" tests...", { "setup": function () { browser = new Browser(); }});
 
     jqUnit.asyncTest("Confirm that passwords must match...", function () {
         var timestamp = (new Date()).getTime();
@@ -94,6 +94,7 @@ function runTests() {
                     var forgotForm = browser.window.$(".forgot-form");
                     jqUnit.assertNotUndefined("There should be a \"forgot password\" form...", forgotForm.html());
                     jqUnit.assertEquals("The \"forgot password\" form should be hidden...", "none", forgotForm.css("display"));
+
 
                     // A "success" message should be visible
                     var feedback = browser.window.$(".success");
