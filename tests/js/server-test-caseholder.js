@@ -34,9 +34,6 @@ gpii.express.couchuser.test.server.caseHolder.isSaneResponse = function (respons
     statusCode = statusCode ? statusCode : 200;
 
     jqUnit.assertEquals("The response should have a reasonable status code", statusCode, response.statusCode);
-    if (response.statusCode !== statusCode) {
-        console.log(JSON.stringify(body, null, 2));
-    }
 
     jqUnit.assertValue("There should be a body.", body);
 };
@@ -74,90 +71,27 @@ gpii.express.couchuser.test.server.caseHolder.generatePassword = function () {
     return "password-" + timestamp;
 };
 
-// Each test has a function that is called when its request is issued.
-gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
+gpii.express.couchuser.test.server.caseHolder.verifyResponse = function (response, body, statusCode, truthy, falsy, hasCurrentUser) {
+    if (!statusCode) { statusCode = 200; }
+    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, statusCode);
 
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-    jqUnit.assertNotNull("There should be a user returned.", data.user);
-    if (data.user) {
+    var data = typeof body === "string" ? JSON.parse(body): body;
+
+    if (truthy) {
+        truthy.forEach(function (key) {
+            jqUnit.assertTrue("The data for '" + key + "' should be truthy...", data[key]);
+        });
+    }
+
+    if (falsy) {
+        falsy.forEach(function (key) {
+            jqUnit.assertFalse("The data for '" + key + "' should be falsy...", data[key]);
+        });
+    }
+
+    if (hasCurrentUser) {
         jqUnit.assertEquals("The current user should be returned.", "admin", data.user.name);
     }
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
-
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-    jqUnit.assertNotNull("There should be a user returned.", data.user);
-    if (data.user) {
-        jqUnit.assertEquals("The current user should be returned.", "admin", data.user.name);
-    }
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body);
-
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-    jqUnit.assertNotNull("There should be a user returned.", data.user);
-    if (data.user) {
-        jqUnit.assertEquals("The current user should be returned.", "admin", data.user.name);
-    }
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 401);
-
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-    jqUnit.assertUndefined("There should not be a user returned.", data.user);
-};
-
-
-gpii.express.couchuser.test.server.caseHolder.verifyFailedLogin = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-    jqUnit.assertUndefined("There should not be a user returned.", data.user);
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyUnverifiedLogin = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 401);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-    jqUnit.assertUndefined("There should not be a user returned.", data.user);
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyDuplicateEmailBlocked = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyIncompleteSignupBlocked = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyBogusVerificationCodeBlocked = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 400);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-};
-
-gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 500);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertFalse("The response should not be 'ok'.", data.ok);
-};
-
-// Verify that the signup was successful
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse = function (signupRequest, response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
 };
 
 // Listen for the email with the verification code and launch the verification request
@@ -189,27 +123,6 @@ gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail = function (
     mailparser.end();
 };
 
-// Listen for the results of hitting the verification link
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-};
-
-// Listen for the results of logging in with our verified acount
-gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin = function (signupRequest, response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
-
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-    jqUnit.assertNotUndefined("There should be a user returned.", data.user);
-};
-
-// Verify that a password reset request is successful
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyInitialResponse = function (resetRequest, response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
-};
-
 // Listen for the email with the verification code and launch the verification request
 gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail = function (forgotRequest, resetRequest, testEnvironment) {
     var content = fs.readFileSync(testEnvironment.smtp.mailServer.currentMessageFile);
@@ -233,22 +146,6 @@ gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail = function (f
 
     mailparser.write(content);
     mailparser.end();
-};
-
-// Listen for the results of hitting the reset link
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyResetLink = function (response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-};
-
-// Listen for the results of logging in with our verified acount
-gpii.express.couchuser.test.server.caseHolder.fullResetVerifyLogin = function (forgotRequest, response, body) {
-    gpii.express.couchuser.test.server.caseHolder.isSaneResponse(response, body, 200);
-
-    var data = typeof body === "string" ? JSON.parse(body) : body;
-    jqUnit.assertTrue("The response should be 'ok'.", data.ok);
-    jqUnit.assertNotUndefined("There should be a user returned.", data.user);
 };
 
 // Each test has a request instance of `kettle.test.request.http` or `kettle.test.request.httpCookie`, and a test module that wires the request to the listener that handles its results.
@@ -516,34 +413,34 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{ name: "admin", password: "admin" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyLoggedIn",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{loginRequest}.events.onComplete",
-                            args: ["{loginRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{loginRequest}.nativeResponse", "{arguments}.0", 200, ["ok", "user"], null, true]
                         },
                         {
                             func: "{currentUserLoggedInRequest}.send",
                             args: [{ name: "admin", password: "admin" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedIn",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{currentUserLoggedInRequest}.events.onComplete",
-                            args: ["{currentUserLoggedInRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{currentUserLoggedInRequest}.nativeResponse", "{arguments}.0", 200, ["ok", "user"], null, true]
                         },
                         {
                             func: "{logoutRequest}.send"
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyLoggedOut",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{logoutRequest}.events.onComplete",
-                            args: ["{logoutRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{logoutRequest}.nativeResponse", "{arguments}.0", 200, ["ok"], ["user"]]
                         },
                         {
                             func: "{currentUserLoggedOutRequest}.send"
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyCurrentUserLoggedOut",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{currentUserLoggedOutRequest}.events.onComplete",
-                            args: ["{currentUserLoggedOutRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{currentUserLoggedOutRequest}.nativeResponse", "{arguments}.0",  401, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -556,9 +453,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{ name: "bogus", password: "bogus" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyFailedLogin",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{bogusLoginRequest}.events.onComplete",
-                            args: ["{bogusLoginRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{bogusLoginRequest}.nativeResponse", "{arguments}.0", 500, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -571,9 +468,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{ name: "unverified", password: "unverified" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyUnverifiedLogin",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{unverifiedLoginRequest}.events.onComplete",
-                            args: ["{unverifiedLoginRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{unverifiedLoginRequest}.nativeResponse", "{arguments}.0", 401, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -586,9 +483,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{ name: "new", password: "new", email: "reset@localhost", roles: [] }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyDuplicateEmailBlocked",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{duplicateUserCreateRequest}.events.onComplete",
-                            args: ["{duplicateUserCreateRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{duplicateUserCreateRequest}.nativeResponse", "{arguments}.0", 400, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -601,9 +498,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{}]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyIncompleteSignupBlocked",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{incompleteUserCreateRequest}.events.onComplete",
-                            args: ["{incompleteUserCreateRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{incompleteUserCreateRequest}.nativeResponse", "{arguments}.0", 400, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -616,9 +513,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{}]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyBogusVerificationCodeBlocked",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{bogusVerificationRequest}.events.onComplete",
-                            args: ["{bogusVerificationRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{bogusVerificationRequest}.nativeResponse", "{arguments}.0", 400, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -631,9 +528,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [{ code: "utter-nonsense-which-should-never-work", password: "something" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyBogusResetCodeBlocked",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{bogusResetRequest}.events.onComplete",
-                            args: ["{bogusResetRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{bogusResetRequest}.nativeResponse", "{arguments}.0", 500, null, ["ok", "user"]]
                         }
                     ]
                 },
@@ -646,9 +543,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: [ "{fullSignupInitialRequest}.options.user" ]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyInitialResponse",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{fullSignupInitialRequest}.events.onComplete",
-                            args: ["{fullSignupInitialRequest}", "{fullSignupInitialRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{fullSignupInitialRequest}.nativeResponse", "{arguments}.0", 200]
                         },
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyEmail",
@@ -656,18 +553,18 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: ["{fullSignupInitialRequest}", "{fullSignupVerifyVerificationRequest}", "{testEnvironment}"]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyVerificationLink",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{fullSignupVerifyVerificationRequest}.events.onComplete",
-                            args: ["{fullSignupVerifyVerificationRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{fullSignupVerifyVerificationRequest}.nativeResponse", "{arguments}.0", 200, ["ok"]]
                         },
                         {
                             func: "{fullSignupLoginRequest}.send",
                             args: [{ name: "{fullSignupInitialRequest}.options.user.name", password: "{fullSignupInitialRequest}.options.user.password" }]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.fullSignupVerifyLogin",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{fullSignupLoginRequest}.events.onComplete",
-                            args: ["{fullSignupInitialRequest}", "{fullSignupLoginRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{fullSignupLoginRequest}.nativeResponse", "{arguments}.0", 200]
                         }
 
                     ]
@@ -682,9 +579,9 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                         },
                         // If we catch this event, the timing won't work out to cache the initial response.  We can safely ignore it for now.
                         //{
-                        //    listener: "gpii.express.couchuser.test.server.caseHolder.fullResetVerifyInitialResponse",
+                        //    listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                         //    event: "{fullResetForgotRequest}.events.onComplete",
-                        //    args: ["{fullResetForgotRequest}", "{fullResetForgotRequest}.nativeResponse", "{arguments}.0"]
+                        //    args: ["{fullResetForgotRequest}", "{fullResetForgotRequest}.nativeResponse", "{arguments}.0", 200]
                         //},
                         {
                             listener: "gpii.express.couchuser.test.server.caseHolder.fullResetVerifyEmail",
@@ -692,18 +589,18 @@ fluid.defaults("gpii.express.couchuser.test.server.caseHolder", {
                             args: ["{fullResetForgotRequest}", "{fullResetVerifyResetRequest}", "{testEnvironment}"]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.fullResetVerifyResetLink",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{fullResetVerifyResetRequest}.events.onComplete",
-                            args: ["{fullResetVerifyResetRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{fullResetVerifyResetRequest}.nativeResponse", "{arguments}.0", 200, ["ok"]]
                         },
                         {
                             func: "{fullResetLoginRequest}.send",
                             args: [{ name: "{fullResetForgotRequest}.options.user.name", password: "{fullResetForgotRequest}.options.user.password"}]
                         },
                         {
-                            listener: "gpii.express.couchuser.test.server.caseHolder.fullResetVerifyLogin",
+                            listener: "gpii.express.couchuser.test.server.caseHolder.verifyResponse",
                             event: "{fullResetLoginRequest}.events.onComplete",
-                            args: ["{fullResetLoginRequest}", "{fullResetLoginRequest}.nativeResponse", "{arguments}.0"]
+                            args: ["{fullResetLoginRequest}.nativeResponse", "{arguments}.0", 200, ["ok", "user"]]
                         }
                     ]
                 }
