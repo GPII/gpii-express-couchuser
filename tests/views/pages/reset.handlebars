@@ -11,15 +11,12 @@
         <!-- Sample reset form with all required markup -->
 
         <div class="row">
-            <div class="column small-offset-4 small-4 reset-viewport">
-                {{>reset-form}}
-            </div>
+            <div class="reset-viewport"></div>
         </div>
 
         <!-- configure and instantiate our module -->
         <script type="text/javascript">
-            var reset = gpii.express.couchuser.frontend.reset("body", {});
-
+            var reset = gpii.express.couchuser.frontend.reset(".reset-viewport");
             $(document).foundation();
         </script>
     </body>

@@ -1,10 +1,13 @@
-{{#if req.query.code}}
-    <div class="reset-message">
-        <p>Use the form below to reset your password.</p>
-    </div>
+<div class="column small-offset-4 small-4 reset-viewport">
+    <div class="reset-success"></div>
+    <div class="reset-error"></div>
+
+    <p>Use the form below to reset your password.</p>
 
     <form class="reset-form" method="POST">
         <input type="hidden" name="code" value="{{req.query.code}}"/>
+
+        <div class="reset-password-message"></div>
 
         <label for="password">New Password:</label>
         <input id="password" type="password" tabindex="3" name="password">
@@ -14,12 +17,5 @@
 
         <input type="submit" tabindex="5" class="button reset-button" value="Reset Password">
     </form>
-{{else}}
-    <div class="reset-message">
-        <div data-alert class="alert-box alert">
-            <p>You have attempted to use an expired or invalid password reset code.  Please <a href="forgot">use the "forgot password" form to request a new reset code</a>.</p>
-        </div>
-    </div>
+</div>
 
-    <div class="reset-form"></div>
-{{/if}}
