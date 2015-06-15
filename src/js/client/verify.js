@@ -1,109 +1,65 @@
 // A front-end component to provide meaningful feedback when users verify their accounts using /api/user/verify/:code
-/* global fluid, jQuery */
-(function ($) {
+/* global fluid, jQuery, window */
+(function () {
     "use strict";
-    var gpii = fluid.registerNamespace("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.verify");
 
-    // Try to log in and display the results
-    gpii.express.couchuser.frontend.verify.submit = function (that, event) {
-        if (event) { event.preventDefault(); }
-
-        if (!that.model || !that.model.code) {
-            that.displayError(null, null, "<p>Cannot continue without a verification code.  Please check your email for a verification link or contact a system administrator for assistance.</p>");
-            return;
-        }
-        else {
-            var settings = {
-                type:    "GET",
-                url:     that.options.apiUrl + "/verify/" + that.model.code,
-                success: that.displayReceipt,
-                error:   that.displayError
-            };
-
-            $.ajax(settings);
-        }
+    gpii.express.couchuser.frontend.verify.extractQueryParams = function () {
+        var rawQuery = fluid.url.parseUri(window.location.href);
+        return rawQuery.queryKey;
     };
 
-    // TODO: move this to a general module type that everyone inherits from
-    gpii.express.couchuser.frontend.verify.displayError = function (that, jqXHR, textStatus, errorThrown) {
-        var message = errorThrown;
-        try {
-            var jsonData = JSON.parse(jqXHR.responseText);
-            if (jsonData.message) { message = jsonData.message; }
-        }
-        catch (e) {
-            console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
-        }
-
-        that.templates.html(that.locate("message"), that.options.templates.error, { message: message });
-    };
-
-    gpii.express.couchuser.frontend.verify.displayReceipt = function (that, responseData) {
-        var jsonData = JSON.parse(responseData);
-        if (jsonData && jsonData.ok) {
-            that.applier.change("user", jsonData.user);
-
-            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You have successfully verified your account." });
-        }
-        else {
-            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
-        }
-    };
-
-    // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.verify.init = function (that) {
-        that.templates.loadTemplates();
+    gpii.express.couchuser.frontend.verify.assembleUrl = function (baseUrl, code) {
+        return baseUrl + code;
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.verify", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
         model: {
-            code: null
+            code:     "{that}.model.req.query.code",
+            req: {
+                query: {
+                    expander: {
+                        funcName: "gpii.express.couchuser.frontend.verify.extractQueryParams"
+                    }
+                }
+            }
         },
         templates: {
+            initial: "verify-viewport",
             success: "common-success",
             error:   "common-error"
         },
-        components: {
-            templates: {
-                "type": "gpii.templates.hb.client"
+        ajaxOptions: {
+            url:    {
+                expander: {
+                    funcName: "gpii.express.couchuser.frontend.verify.assembleUrl",
+                    args:     ["/api/user/verify/", "{that}.model.code"]
+                }
+            },
+            method: "GET"
+        },
+        rules: {
+            submission: {
+                "": "notfound"
+            },
+            error: {
+                "message": "message"
+            },
+            success: {
+                "message": "message"
             }
         },
-        apiUrl: "/api/user",
+        hideOnSuccess: false,
         selectors: {
-            "viewport": ".verify-viewport",
-            "message":  ".verify-message"
-        },
-        events: {
-            "submit":       null,
-            "markupLoaded": null
-        },
-        invokers: {
-            "submit": {
-                funcName: "gpii.express.couchuser.frontend.verify.submit",
-                args: [ "{that}", "{arguments}.0"]
-            },
-            "displayError": {
-                funcName: "gpii.express.couchuser.frontend.verify.displayError",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            },
-            "displayReceipt": {
-                funcName: "gpii.express.couchuser.frontend.verify.displayReceipt",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            },
-            "init": {
-                funcName: "{templates}.loadTemplates"
-            }
+            initial: "",
+            success: "", // Kill the original form whether we succeed or fail.
+            error:   ""
         },
         listeners: {
-            onCreate: {
-                "funcName": "gpii.express.couchuser.frontend.verify.init",
-                "args":     "{that}"
-            },
-            "{templates}.events.templatesLoaded": {
-                "funcName": "gpii.express.couchuser.frontend.verify.submit",
-                "args":     "{that}"
+            "onMarkupRendered.autoSubmit" : {
+                func: "{that}.submitForm",
+                args: [ false]
             }
         }
     });

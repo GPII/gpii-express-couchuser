@@ -9,21 +9,11 @@
     </head>
     <body>
         <div class="row">
-            <div class="verify-viewport column small-offset-4 small-4">
-                <div class="verify-message">
-                    <p>Please wait while we check your verification code...</p>
-                </div>
-            </div>
+            <div class="verify-viewport"></div>
         </div>
 
         <script type="text/javascript">
-            var verify = gpii.express.couchuser.frontend.verify("body", {
-                model: {
-                    "code": {{{jsonify req.query.code }}}
-                }
-            });
-
-            $(document).foundation();
+            var verify = gpii.express.couchuser.frontend.verify(".verify-viewport");
         </script>
     </body>
 </html>

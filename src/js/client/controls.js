@@ -5,8 +5,6 @@
     var gpii = fluid.registerNamespace("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.controls");
 
-    //TODO:  Bind this so that we can update ourselves if the user changes in the background
-
     gpii.express.couchuser.frontend.controls.handleMenuKeys = function (that, event) {
         switch (event.keyCode) {
             case 27: // escape
@@ -28,7 +26,7 @@
     gpii.express.couchuser.frontend.controls.handleLogoutKeys = function (that, event) {
         switch (event.keyCode) {
             case 13: // enter
-                that.logout();
+                that.submitForm(event);
                 break;
         }
     };
@@ -47,72 +45,52 @@
         }
     };
 
-    gpii.express.couchuser.frontend.controls.logout = function (that) {
-        // Fire the REST call that logs a user out, refresh afterward
-        var settings = {
-            type:     "POST",
-            url:      that.options.apiUrl + "/signout",
-            complete: that.handleLogout
-        };
-        $.ajax(settings);
-    };
-
-    gpii.express.couchuser.frontend.controls.handleLogout = function (that) {
-        that.applier.change("user", null);
-    };
-
-    // Update markup and wiring after a change in user status (login/logout, profile update)
-    gpii.express.couchuser.frontend.controls.refresh = function (that) {
-        if (that.templates) {
-            that.templates.replaceWith(that.locate("controls"), that.options.templateName, that.model);
-
-            that.events.markupLoaded.fire();
-        }
-        else {
-            fluid.log("I don't yet have a templates sub-component, can't process refresh().");
-        }
-    };
-
     fluid.defaults("gpii.express.couchuser.frontend.controls", {
-        apiUrl:    "/api/user",
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
-        templateName: "user-controls",
+        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
+        ajaxOptions: {
+            type:     "POST",
+            url:      "/api/user/signout"
+        },
+        templates: {
+            initial: "controls-viewport",
+            success: "common-success",
+            error:   "common-error"
+        },
+        rules: {
+            model: {
+                model: {
+                    user: {
+                        literalValue: null
+                    }
+                }
+            },
+            success: {
+                "":        "notfound",
+                "message": "notfound"
+            }
+        },
         selectors: {
+            initial:  "",
+            success:  ".controls-message",
+            error:    ".controls-message",
             controls: ".user-controls",
             menu:     ".user-menu",
             logout:   ".user-menu-logout",
             toggle:   ".user-controls-toggle"
-        },
-        components: {
-            templates: {
-                type: "gpii.templates.hb.client"
-            }
         },
         model: {
             user: null
         },
         modelListeners: {
             user: {
-                funcName: "gpii.express.couchuser.frontend.controls.refresh",
-                args:     ["{that}"]
+                func:          "{that}.renderInitialMarkup",
+                excludeSource: "init"
             }
         },
         invokers: {
-            logout: {
-                funcName: "gpii.express.couchuser.frontend.controls.logout",
-                args:     [ "{that}"]
-            },
-            handleLogout: {
-                funcName: "gpii.express.couchuser.frontend.controls.handleLogout",
-                args:     ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-            },
             toggleMenu: {
                 funcName: "gpii.express.couchuser.frontend.controls.toggleMenu",
                 args:     [ "{that}"]
-            },
-            handleLogoutKeys: {
-                funcName: "gpii.express.couchuser.frontend.controls.handleLogoutKeys",
-                args:     [ "{that}", "{arguments}.0"]
             },
             handleMenuKeys: {
                 funcName: "gpii.express.couchuser.frontend.controls.handleMenuKeys",
@@ -123,21 +101,12 @@
                 args:     [ "{that}", "{arguments}.0"]
             }
         },
-        events: {
-            markupLoaded: null
-        },
         listeners: {
-            "{templates}.events.templatesLoaded": [
-                {
-                    funcName: "gpii.express.couchuser.frontend.controls.refresh",
-                    args:     ["{that}"]
-                }
-            ],
-            markupLoaded: [
+            onMarkupRendered: [
                 {
                     "this":   "{that}.dom.logout",
                     "method": "click",
-                    "args":   "{that}.logout"
+                    "args":   "{that}.submitForm"
                 },
                 {
                     "this":   "{that}.dom.logout",

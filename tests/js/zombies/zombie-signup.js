@@ -18,12 +18,12 @@ var isBrowserSane = require("./browser-sanity.js");
 require("./zombie-test-harness.js");
 
 var harness = gpii.express.couchuser.tests.harness({
-    expressPort: 7523,
-    baseUrl:     "http://localhost:7523/",
-    pouchPort:   7524,
-    pouchUrl:    "http://localhost:7524/",
-    usersUrl:    "http://localhost:7524/_users",
-    smtpPort:    4085
+    expressPort: 7532,
+    baseUrl:     "http://localhost:7532/",
+    pouchPort:   7542,
+    pouchUrl:    "http://localhost:7542/",
+    usersUrl:    "http://localhost:7542/_users",
+    smtpPort:    4089
 });
 
 function runTests() {

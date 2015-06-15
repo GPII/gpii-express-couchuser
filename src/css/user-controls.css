@@ -2,13 +2,27 @@
 .user-menu {
     margin-top: 0px;
     border: 1px solid #cccccc;
-    padding: 1em;
     position: absolute;
     top: 3em;
     z-index: 999;
-    width: 90%;
+    width: 88%;
 }
 
+.user-menu ul {
+    padding:0px;
+    margin: 0px;
+    list-style-type: none;
+}
+
+.user-menu li {
+    list-style: none;
+    padding: .75em;
+    margin: 0px;
+}
+
+.user-menu li:nth-child(even) {
+    background-color: #f3f3f3;
+}
 
 .user-controls .button {
     margin-bottom: 0px;

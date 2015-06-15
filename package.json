@@ -14,7 +14,7 @@
   "license": "See LICENSE file for details.",
   "dependencies": {
     "express-user-couchdb": "0.3.4",
-    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#c98e5c6700ddb59df7c51d370cf850ab2c78904d",
+    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#646631e37674161605919122352a7d5d88f8905a",
     "infusion":             "git://github.com/fluid-project/infusion.git#605b0bcfaedf6193c31456236d3aa4e42cf36a96",
     "when":                 "3.7.2"
   },

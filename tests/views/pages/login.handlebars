@@ -6,50 +6,20 @@
 
         <!-- Bring in client libraries being tested -->
         <script type="text/javascript" src="/js/client/login.js"></script>
+        <script type="text/javascript" src="/js/client/loginWithControls.js"></script>
     </head>
     <body>
-        <!-- User controls -->
-        <div class="row">
-            <div class="column small-offset-9 small-3">
-                {{>user-controls}}
-            </div>
-        </div>
+        <div class="controls-viewport"></div>
+        <div class="login-viewport"></div>
 
-        <!-- Sample login form with all required markup -->
-        <div class="row">
-            <div class="column small-offset-4 small-4 login-viewport">
-                <div class="login-viewport">
-                    {{>login-message}}
-                    {{>login-form}}
-                </div>
-            </div>
-        </div>
-
-        <!-- TODO: create a loginWithControls component that contains the component configuration -->
-        <!-- TODO: move the model definition to the login component -->
         <!-- configure and instantiate our module -->
         <script type="text/javascript">
-            var login = gpii.express.couchuser.frontend.login("body", {
+            var login = gpii.express.couchuser.frontend.loginWithControls({
+                container: "body",
                 model: {
-                    user: {{#if req.session.user}}{{{jsonify req.session.user }}}{{else}}null{{/if}}
-                },
-                components: {
-                    controls: {
-                        type:    "gpii.express.couchuser.frontend.controls",
-                        container: "body",
-                        options: {
-                            components: {
-                                "templates": "{gpii.express.couchuser.frontend.login}.templates"
-                            },
-                            model: {
-                                user: "{login}.model.user"
-                            }
-                        }
-                    }
+                user: {{#if req.session.user}}{{{jsonify req.session.user }}}{{else}}null{{/if}}
                 }
             });
-
-            $(document).foundation();
         </script>
     </body>
 </html>

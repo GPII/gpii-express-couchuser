@@ -6,21 +6,15 @@
         gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
         ajaxOptions: {
             type:        "POST",
-            url:         "/api/user/forgot",
-            success:     "{that}.handleSuccess",
-            error:       "{that}.handleAjaxError"
+            url:         "/api/user/forgot"
         },
         model: {
             email: ""
         },
-        rules: {
-            success: { message: "Check your email for instructions about resetting your password." },
-            error:   { message: "message" }
-        },
         selectors: {
             initial: "",
-            error:   ".forgot-message",
-            success: "",
+            error:   ".forgot-error",
+            success: ".forgot-success",
             submit:  ".forgot-button",
             email:    "input[name='email']"
         },

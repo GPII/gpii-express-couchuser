@@ -1,140 +1,65 @@
 // provide a front-end to /api/user/signup
 /* global fluid, jQuery */
-(function ($) {
+(function () {
     "use strict";
-    var gpii = fluid.registerNamespace("gpii");
-    fluid.registerNamespace("gpii.express.couchuser.frontend.signup");
-
-    // Try to log in and display the results
-    gpii.express.couchuser.frontend.signup.submit = function (that, event) {
-        if (event) { event.preventDefault(); }
-        var name     = that.locate("name").val();
-        var email    = that.locate("email").val();
-        var password = that.locate("password").val();
-        var confirm  = that.locate("confirm").val();
-
-        // Our user handling library doesn't offer password confirmation, so we have to do it ourselves for now
-        if (password !== confirm) {
-            that.displayError(null, null, "The passwords you have entered don't match.");
-            return;
-        }
-
-        var settings = {
-            type:        "POST",
-            url:         that.options.apiUrl + "/signup",
-            success:     that.displayReceipt,
-            error:       that.displayError,
-            contentType: "application/json",
-            processData: false,
-            data:        JSON.stringify({ name: name, "password": password, "email": email, "roles": ["user", "user"] })
-        };
-
-        $.ajax(settings);
-    };
-
-    gpii.express.couchuser.frontend.signup.displayError = function (that, jqXHR, textStatus, errorThrown) {
-        var message = errorThrown;
-        try {
-            var jsonData = JSON.parse(jqXHR.responseText);
-            if (jsonData.message) { message = jsonData.message; }
-        }
-        catch (e) {
-            console.log("jQuery.ajax call returned meaningless jqXHR.responseText payload. Using 'errorThrown' instead.");
-        }
-
-        that.templates.html(that.locate("message"), that.options.templates.error, { message: message });
-    };
-
-    gpii.express.couchuser.frontend.signup.displayReceipt = function (that, responseData) {
-        var jsonData = JSON.parse(responseData);
-        if (jsonData && jsonData.ok) {
-            that.applier.change("user", jsonData.user);
-            that.locate("form").hide();
-
-            that.templates.html(that.locate("message"), that.options.templates.success, { message: "You have created an account. Check your email for details about verifying your new account." });
-        }
-        else {
-            that.templates.html(that.locate("message"), that.options.templates.error, { message: jsonData.message });
-        }
-    };
-
-    gpii.express.couchuser.frontend.signup.refresh = function (that) {
-        that.templates.replaceWith(that.locate("form"), that.options.templates.form, that.model);
-        that.events.markupLoaded.fire();
-    };
-
-    // We have to do this because templates need to be loaded before we initialize our own code.
-    gpii.express.couchuser.frontend.signup.init = function (that) {
-        that.templates.loadTemplates();
-        that.events.markupLoaded.fire();
-    };
 
     fluid.defaults("gpii.express.couchuser.frontend.signup", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
-        apiUrl: "/api/user",
-        templates: {
-            success: "success",
-            error:   "common-error",
-            form:    "signup-form"
+        gradeNames: ["gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        ajaxOptions: {
+            type:   "POST",
+            url:    "/api/user/signup",
+            json:   true
         },
-        components: {
-            templates: {
-                "type": "gpii.templates.hb.client"
+        rules: {
+            submission: {
+                name:     "username",
+                password: "password",
+                email:    "email",
+                // Needed to ensure that our account can be created.
+                roles: {
+                    literalValue: ["user"]
+                }
+            },
+            success: {
+                ok: "ok",
+                message: {
+                    literalValue: "You have successfully created an account.  Check your email for further instructions."
+                }
             }
+        },
+        templates: {
+            initial: "signup-viewport",
+            success: "common-success",
+            error:   "common-error"
         },
         selectors: {
-            "form":     ".signup-form",
-            "viewport": ".signup-viewport",
-            "message":  ".signup-message",
-            "name":     "input[name='username']",
-            "email":    "input[name='email']",
-            "password": "input[name='password']",
-            "confirm":  "input[name='confirm']"
+            success:  ".signup-success",
+            error:    ".signup-error",
+            submit:   ".signup-submit",
+            username: "input[name='username']",
+            email:    "input[name='email']",
+            password: "input[name='password']",
+            confirm:  "input[name='confirm']"
         },
-        events: {
-            "submit":       null,
-            "refresh":      null,
-            "markupLoaded": null
-        },
-        invokers: {
-            "submit": {
-                funcName: "gpii.express.couchuser.frontend.signup.submit",
-                args: [ "{that}", "{arguments}.0"]
+        bindings: [
+            // We have to duplicate the bindings from `passwordCheckingForm` for now.
+            // TODO:  Review with Antranig
+            {
+                selector: "confirm",
+                path:     "confirm"
             },
-            "displayError": {
-                funcName: "gpii.express.couchuser.frontend.signup.displayError",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            {
+                selector: "password",
+                path:     "password"
             },
-            "displayReceipt": {
-                funcName: "gpii.express.couchuser.frontend.signup.displayReceipt",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            {
+                selector:    "username",
+                path:        "username"
             },
-            "init": {
-                funcName: "gpii.express.couchuser.frontend.signup.loadTemplates"
+            {
+                selector:    "email",
+                path:        "email"
             }
-        },
-        listeners: {
-            onCreate: [
-                {
-                    "funcName": "gpii.express.couchuser.frontend.signup.init",
-                    "args":     "{that}"
-                }
-            ],
-            "markupLoaded": [
-                {
-                    "this": "{that}.dom.form",
-                    method: "submit",
-                    args:   "{that}.submit"
-                }
-            ],
-            "submit": {
-                func: "gpii.express.couchuser.frontend.signup.submit",
-                args: [ "{that}"]
-            },
-            "refresh": {
-                func: "gpii.express.couchuser.frontend.signup.refresh",
-                args: [ "{that}"]
-            }
-        }
+        ]
     });
 })(jQuery);

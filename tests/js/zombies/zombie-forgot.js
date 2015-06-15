@@ -215,7 +215,7 @@ function runTests() {
                                 jqUnit.assertEquals("The reset form should be hidden...", "none", resetForm.css("display"));
 
                                 // A "success" message should be visible
-                                var feedback = resetBrowser.window.$(".success");
+                                var feedback = resetBrowser.window.$(".reset-success");
                                 jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
 
                                 // There should be no alerts
