@@ -61,7 +61,7 @@ function runTests() {
 
                             // The forgot password form should be visible
                             var resetForm = resetBrowser.window.$(".reset-form");
-                            jqUnit.assertNotUndefined("There should be a form...", resetForm.html());
+                            jqUnit.assertTrue("There should be a form...", resetForm.html().length > 0);
                             jqUnit.assertEquals("The form should not be hidden...", "", resetForm.css("display"));
 
                             // A "success" message should not be visible
@@ -70,7 +70,7 @@ function runTests() {
 
                             // There should be an alert
                             var alert = resetBrowser.window.$(".alert");
-                            jqUnit.assertNotUndefined("There should be at least one alert...", alert.html());
+                            jqUnit.assertTrue("There should be at least one alert...", alert.html().length > 0);
                             if (alert.html()) {
                                 jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                             }
@@ -92,17 +92,17 @@ function runTests() {
 
                     // The "forgot password" form should not be visible
                     var forgotForm = browser.window.$(".forgot-form");
-                    jqUnit.assertNotUndefined("There should be a \"forgot password\" form...", forgotForm.html());
+                    jqUnit.assertTrue("There should be a \"forgot password\" form...", forgotForm.html().length > 0);
                     jqUnit.assertEquals("The \"forgot password\" form should be hidden...", "none", forgotForm.css("display"));
 
 
                     // A "success" message should be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".forgot-success");
+                    jqUnit.assertTrue("There should be a positive feedback message...", feedback.html().length > 0);
 
                     // There should be no alerts
-                    var alert = browser.window.$(".alert");
-                    jqUnit.assertUndefined("There should not be an alert...", alert.html());
+                    var alert = browser.window.$(".forgot-error");
+                    jqUnit.assertEquals("There should not be an alert...", 0, alert.html().length);
                 });
         });
     });
@@ -122,16 +122,16 @@ function runTests() {
 
                     // The "forgot password" form should be visible
                     var forgotForm = browser.window.$(".forgot-form");
-                    jqUnit.assertNotUndefined("There should be a \"forgot password\" form...", forgotForm.html());
+                    jqUnit.assertTrue("There should be a \"forgot password\" form...", forgotForm.html().length > 0);
                     jqUnit.assertEquals("The \"forgot password\" form should not be hidden...", "", forgotForm.css("display"));
 
                     // A "success" message should be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertUndefined("There should not be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".forgot-success");
+                    jqUnit.assertEquals("There should not be a positive feedback message...", 0, feedback.html().length);
 
                     // There should be no alerts
-                    var alert = browser.window.$(".alert");
-                    jqUnit.assertNotUndefined("There should be an alert...", alert.html());
+                    var alert = browser.window.$(".forgot-error");
+                    jqUnit.assertTrue("There should be an alert...", alert.html().length > 0);
                     if (alert.html()) {
                         jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                     }
@@ -153,18 +153,15 @@ function runTests() {
 
                     // The "forgot password" form should not be visible
                     var resetForm = browser.window.$(".reset-form");
-                    jqUnit.assertNotUndefined("There should be a \"reset\" form...", resetForm.html());
+                    jqUnit.assertTrue("There should be a \"reset\" form...", resetForm.html().length > 0);
 
                     // A "success" message should not be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertUndefined("There should not be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".forgot-success");
+                    jqUnit.assertEquals("There should not be a positive feedback message...", 0, feedback.html().length);
 
                     // There should be at least one alert
-                    var alert = browser.window.$(".alert");
-                    jqUnit.assertNotUndefined("There should be an alert...", alert.html());
-                    if (alert.html()) {
-                        jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
-                    }
+                    var alert = browser.window.$(".forgot-error");
+                    jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                 });
         });
     });
@@ -211,12 +208,12 @@ function runTests() {
 
                                 // The reset form should no longer be visible
                                 var resetForm = resetBrowser.window.$(".reset-form");
-                                jqUnit.assertNotUndefined("There should be a reset form...", resetForm.html());
+                                jqUnit.assertTrue("There should be a reset form...", resetForm.html().length > 0);
                                 jqUnit.assertEquals("The reset form should be hidden...", "none", resetForm.css("display"));
 
                                 // A "success" message should be visible
                                 var feedback = resetBrowser.window.$(".reset-success");
-                                jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                                jqUnit.assertTrue("There should be a positive feedback message...", feedback.html().length > 0);
 
                                 // There should be no alerts
                                 var alert = resetBrowser.window.$(".alert");
@@ -237,12 +234,12 @@ function runTests() {
 
                                             // The login form should no longer be visible
                                             var loginForm = resetBrowser.window.$(".login-form");
-                                            jqUnit.assertNotUndefined("There should be a login form...", loginForm.html());
+                                            jqUnit.assertTrue("There should be a login form...", loginForm.html().length > 0);
                                             jqUnit.assertEquals("The login form should be hidden...", "none", loginForm.css("display"));
 
                                             // A "success" message should be visible
                                             var feedback = resetBrowser.window.$(".success");
-                                            jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                                            jqUnit.assertTrue("There should be a positive feedback message...", feedback.html().length > 0);
 
                                             // There should be no alerts
                                             var alert = resetBrowser.window.$(".alert");
@@ -273,16 +270,16 @@ function runTests() {
 
                     // The "forgot password" form should not be visible
                     var forgotForm = browser.window.$(".forgot-form");
-                    jqUnit.assertNotUndefined("There should be a \"forgot password\" form...", forgotForm.html());
+                    jqUnit.assertTrue("There should be a \"forgot password\" form...", forgotForm.html().length > 0);
                     jqUnit.assertEquals("The \"forgot password\" form should be hidden...", "none", forgotForm.css("display"));
 
                     // A "success" message should be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".forgot-success");
+                    jqUnit.assertTrue("There should be a positive feedback message...", feedback.html().length > 0);
 
                     // There should be no alerts
-                    var alert = browser.window.$(".alert");
-                    jqUnit.assertUndefined("There should not be an alert...", alert.html());
+                    var alert = browser.window.$(".forgot-error");
+                    jqUnit.assertEquals("There should not be an alert...", 0, alert.html().length);
                 });
         });
     });

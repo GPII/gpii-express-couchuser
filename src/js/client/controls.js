@@ -58,10 +58,8 @@
         },
         rules: {
             model: {
-                model: {
-                    user: {
-                        literalValue: null
-                    }
+                user: {
+                    literalValue: null
                 }
             },
             success: {

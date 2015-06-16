@@ -45,13 +45,14 @@ function runTests() {
                     jqUnit.assertEquals("The login form should not be hidden...", "none", loginForm.css("display"));
 
                     // A "success" message should be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".login-success");
+                    jqUnit.assertTrue("There should be a positive feedback message...", feedback.html().length > 0);
 
                     // The profile should now have data
                     var toggle = browser.window.$(".user-controls-toggle");
                     var username = toggle.text().trim();
                     jqUnit.assertTrue("The profile username should not be undefined", username.indexOf("Not Logged In") === -1);
+                    console.log("username:" + username);
 
                     // There should be no alerts
                     var alert = browser.window.$(".alert");

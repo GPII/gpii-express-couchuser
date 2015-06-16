@@ -14,9 +14,9 @@
             user: null
         },
         ajaxOptions: {
-            url:    "/api/user/signin",
-            method: "POST",
-            json:   true
+            url:      "/api/user/signin",
+            method:   "POST",
+            dataType: "json"
         },
         modelListeners: {
             "user.refresh": {
@@ -31,11 +31,9 @@
                 password: "password"
             },
             model: {
-                model: {
-                    user: "user",
-                    password: {
-                        literalValue: ""
-                    }
+                user: "responseJSON.user",
+                password: {
+                    literalValue: ""
                 }
             },
             success: {

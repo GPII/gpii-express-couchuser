@@ -6,7 +6,7 @@
     fluid.defaults("gpii.express.couchuser.frontend.loginWithControls", {
         gradeNames: ["fluid.modelRelayComponent", "autoInit"],
         model: {
-            user: null
+            user: {}
         },
         components: {
             login: {

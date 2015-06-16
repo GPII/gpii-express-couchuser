@@ -55,10 +55,10 @@ function runTests() {
                     jqUnit.assertEquals("The signup form should not be hidden...", "", signupForm.css("display"));
 
                     var feedback = browser.window.$(".success");
-                    jqUnit.assertUndefined("There should not be a positive feedback message...", feedback.html());
+                    jqUnit.assertEquals("There should not be a positive feedback message...", 0, feedback.html().length);
 
                     var alert = browser.window.$(".alert");
-                    jqUnit.assertNotUndefined("There should be an alert...", alert.html());
+                    jqUnit.assertTrue("There should be an alert...", alert.html().length > 0);
                     if (alert.html()) {
                         jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                     }
@@ -92,12 +92,12 @@ function runTests() {
                     jqUnit.assertEquals("The signup form should be visible...", "", signupForm.css("display"));
 
                     // A "success" message should not be visible
-                    var feedback = browser.window.$(".success");
-                    jqUnit.assertUndefined("There should not be a positive feedback message...", feedback.html());
+                    var feedback = browser.window.$(".signup-success");
+                    jqUnit.assertEquals("There should not be a positive feedback message...", 0, feedback.html().length);
 
                     // There should be no alerts
-                    var alert = browser.window.$(".alert");
-                    jqUnit.assertNotUndefined("There should be an alert...", alert.html());
+                    var alert = browser.window.$(".signup-error");
+                    jqUnit.assertTrue("There should be an alert...", alert.html().length > 0);
                     if (alert.html()) {
                         jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
                     }
@@ -110,12 +110,12 @@ function runTests() {
         browser.visit(harness.options.baseUrl + "content/verify?code=" + timestamp).then(function () {
             jqUnit.start();
             // A "success" message should not be visible
-            var feedback = browser.window.$(".success");
-            jqUnit.assertUndefined("There should not be a positive feedback message...", feedback.html());
+            var feedback = browser.window.$(".verify-success");
+            jqUnit.assertEquals("There should not be a positive feedback message...", 0, feedback.html().length);
 
             // There should be at least one alert
-            var alert = browser.window.$(".alert");
-            jqUnit.assertNotUndefined("There should be an alert...", alert.html());
+            var alert = browser.window.$(".verify-error");
+            jqUnit.assertTrue("There should be an alert...", alert.html().length > 0);
             if (alert.html()) {
                 jqUnit.assertTrue("The alert should have content.", alert.html().trim().length > 0);
             }
@@ -155,11 +155,11 @@ function runTests() {
                         isBrowserSane(jqUnit, verifyBrowser);
 
                         // A "success" message should be visible
-                        var feedback = verifyBrowser.window.$(".success");
+                        var feedback = verifyBrowser.window.$(".verify-success");
                         jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
 
                         // There should be no alerts
-                        var alert = verifyBrowser.window.$(".alert");
+                        var alert = verifyBrowser.window.$(".verify-error");
                         jqUnit.assertUndefined("There should not be an alert...", alert.html());
 
                         // Log in using the new account
@@ -181,12 +181,12 @@ function runTests() {
                                     jqUnit.assertEquals("The login form should not be hidden...", "none", loginForm.css("display"));
 
                                     // A "success" message should be visible
-                                    var feedback = verifyBrowser.window.$(".success");
+                                    var feedback = verifyBrowser.window.$(".login-success");
                                     jqUnit.assertNotUndefined("There should be a positive feedback message...", feedback.html());
 
                                     // There should be no alerts
-                                    var alert = verifyBrowser.window.$(".alert");
-                                    jqUnit.assertUndefined("There should not be any alerts...", alert.html());
+                                    var alert = verifyBrowser.window.$(".login-error");
+                                    jqUnit.assertEquals("There should not be any alerts...", 0, alert.html().length);
                                 });
                         });
                     });

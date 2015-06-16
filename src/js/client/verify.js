@@ -42,19 +42,15 @@
         rules: {
             submission: {
                 "": "notfound"
-            },
-            error: {
-                "message": "message"
-            },
-            success: {
-                "message": "message"
             }
         },
-        hideOnSuccess: false,
+        hideOnSuccess: true,
+        hideOnError:   true,
         selectors: {
             initial: "",
-            success: "", // Kill the original form whether we succeed or fail.
-            error:   ""
+            form:    ".verify-form",
+            success: ".verify-success",
+            error:   ".verify-error"
         },
         listeners: {
             "onMarkupRendered.autoSubmit" : {
