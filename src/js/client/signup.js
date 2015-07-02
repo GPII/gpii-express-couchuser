@@ -4,14 +4,15 @@
     "use strict";
 
     fluid.defaults("gpii.express.couchuser.frontend.signup", {
-        gradeNames: ["gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        container:  ".signup-viewport",
         ajaxOptions: {
             type:   "POST",
             url:    "/api/user/signup",
             json:   true
         },
         rules: {
-            submission: {
+            modelToRequestPayload: {
                 name:     "username",
                 password: "password",
                 email:    "email",
@@ -20,9 +21,8 @@
                     literalValue: ["user"]
                 }
             },
-            success: {
-                ok: "ok",
-                message: {
+            successResponseToModel: {
+                successMessage: {
                     literalValue: "You have successfully created an account.  Check your email for further instructions."
                 }
             }
@@ -41,25 +41,13 @@
             password: "input[name='password']",
             confirm:  "input[name='confirm']"
         },
-        bindings: [
-            // We have to duplicate the bindings from `passwordCheckingForm` for now.
-            // TODO:  Review with Antranig
-            {
-                selector: "confirm",
-                path:     "confirm"
-            },
-            {
-                selector: "password",
-                path:     "password"
-            },
-            {
-                selector:    "username",
-                path:        "username"
-            },
-            {
-                selector:    "email",
-                path:        "email"
-            }
-        ]
+        bindings: {
+            "username": "username",
+            "email":    "email"
+        }
+    });
+
+    fluid.defaults("gpii.express.couchuser.frontend.signup.hasUserControls", {
+        gradeNames: ["gpii.express.couchuser.frontend.signup", "gpii.ul.hasUserControls"]
     });
 })(jQuery);

@@ -42,7 +42,7 @@ function runTests() {
                     // The login form should no longer be visible
                     var loginForm = browser.window.$(".login-form");
                     jqUnit.assertNotUndefined("There should be a login form...", loginForm.html());
-                    jqUnit.assertEquals("The login form should not be hidden...", "none", loginForm.css("display"));
+                    jqUnit.assertEquals("The login form should be hidden...", "none", loginForm.css("display"));
 
                     // A "success" message should be visible
                     var feedback = browser.window.$(".login-success");

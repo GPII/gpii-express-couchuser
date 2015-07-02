@@ -6,20 +6,11 @@
 
         <!-- Bring in client libraries being tested -->
         <script type="text/javascript" src="/js/client/login.js"></script>
-        <script type="text/javascript" src="/js/client/loginWithControls.js"></script>
     </head>
     <body>
         <div class="controls-viewport"></div>
         <div class="login-viewport"></div>
 
-        <!-- configure and instantiate our module -->
-        <script type="text/javascript">
-            var login = gpii.express.couchuser.frontend.loginWithControls({
-                container: "body",
-                model: {
-                user: {{#if req.session.user}}{{{jsonify req.session.user }}}{{else}}null{{/if}}
-                }
-            });
-        </script>
+        {{{initBlock "gpii.ul.hasUserControls" "gpii.express.couchuser.frontend.login"}}}
     </body>
 </html>

@@ -1,4 +1,5 @@
 // Present a standard set of user controls with login/logout/profile links
+// TODO: Convert this to use a common "toggler" grade once that has been sufficiently exercised and moved somewhere central.
 /* global fluid, jQuery */
 (function ($) {
     "use strict";
@@ -46,7 +47,7 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.controls", {
-        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.templates.templateFormControl", "autoInit"],
         ajaxOptions: {
             type:     "POST",
             url:      "/api/user/signout"
@@ -57,14 +58,12 @@
             error:   "common-error"
         },
         rules: {
-            model: {
+            successResponseToModel: {
+                "":        "notfound",
                 user: {
                     literalValue: null
-                }
-            },
-            success: {
-                "":        "notfound",
-                "message": "notfound"
+                },
+                "successMessage": "notfound"
             }
         },
         selectors: {
@@ -127,6 +126,22 @@
                     "args":   "{that}.handleMenuKeys"
                 }
             ]
+        }
+    });
+
+    // A convenience gradeName to make any component aware of these controls.
+    fluid.defaults("gpii.ul.hasUserControls", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        components: {
+            controls: {
+                type:      "gpii.express.couchuser.frontend.controls",
+                container: ".controls-viewport",
+                options: {
+                    model: {
+                        user: "{hasUserControls}.model.user"
+                    }
+                }
+            }
         }
     });
 })(jQuery);

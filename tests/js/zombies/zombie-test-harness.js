@@ -125,13 +125,13 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         type: "gpii.express.hb"
                     },
                     content: {
-                        type: "gpii.express.hb.dispatcher",
+                        type: "gpii.express.dispatcher",
                         options: {
                             path:    "/content/:template"
                         }
                     },
                     inline: {
-                        type: "gpii.express.hb.inline",
+                        type: "gpii.express.inline",
                         options: {
                             path: "/hbs"
                         }

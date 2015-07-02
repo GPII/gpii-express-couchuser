@@ -2,6 +2,7 @@
 /* global fluid, jQuery, window */
 (function () {
     "use strict";
+    var gpii = fluid.registerNamespace("gpii");
     fluid.registerNamespace("gpii.express.couchuser.frontend.verify");
 
     gpii.express.couchuser.frontend.verify.extractQueryParams = function () {
@@ -14,7 +15,8 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.verify", {
-        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.templates.templateFormControl", "autoInit"],
+        container:  ".verify-viewport",
         model: {
             code:     "{that}.model.req.query.code",
             req: {
@@ -40,7 +42,7 @@
             method: "GET"
         },
         rules: {
-            submission: {
+            modelToRequestPayload: {
                 "": "notfound"
             }
         },
@@ -58,5 +60,9 @@
                 args: [ false]
             }
         }
+    });
+
+    fluid.defaults("gpii.express.couchuser.frontend.verify.hasUserControls", {
+        gradeNames: ["gpii.express.couchuser.frontend.verify", "gpii.ul.hasUserControls"]
     });
 })(jQuery);

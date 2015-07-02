@@ -9,13 +9,11 @@
     gpii.express.couchuser.frontend.passwordCheckingForm.checkPasswords = function (that) {
         that.passwordsMatch = (that.model.password === that.model.confirm);
 
-        if (that.error) {
-            if (that.passwordsMatch) {
-                that.error.applier.change("message", null);
-            }
-            else {
-                that.error.applier.change("message", that.options.messages.passwordsDontMatch);
-            }
+        if (that.passwordsMatch) {
+            that.applier.change("errorMessage", null);
+        }
+        else {
+            that.applier.change("errorMessage", that.options.messages.passwordsDontMatch);
         }
     };
 
@@ -30,7 +28,7 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.passwordCheckingForm", {
-        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.templates.templateFormControl", "autoInit"],
         model: {
             password: null,
             confirm:  null
@@ -57,24 +55,17 @@
             confirm:  "input[name='confirm']",
             password: "input[name='password']"
         },
-        // TODO:  Figure out how to safely combine these.
-        bindings: [
-            {
-                selector: "confirm",
-                path:     "confirm"
-            },
-            {
-                selector: "password",
-                path:     "password"
-            }
-        ],
+        bindings: {
+            "confirm":  "confirm",
+            "password": "password"
+        },
         invokers: {
             submitForm: {
                 funcName: "gpii.express.couchuser.frontend.passwordCheckingForm.checkAndSubmit",
                 args:     ["{that}", "{arguments}.0"]
             },
             continueSubmission: {
-                funcName: "gpii.templates.hb.client.templateFormControl.submitForm",
+                funcName: "gpii.templates.templateFormControl.submitForm",
                 args:     ["{that}", "{arguments}.0"]
             }
         }

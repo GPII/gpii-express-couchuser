@@ -12,10 +12,18 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.reset", {
-        gradeNames: ["gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        container:  ".reset-viewport",
         ajaxOptions: {
             type:    "POST",
             url:     "/api/user/reset"
+        },
+        rules: {
+            successResponseToModel: {
+                successMessage: {
+                    literalValue: "Your password has been reset."
+                }
+            }
         },
         templates: {
             success: "common-success",
@@ -39,21 +47,8 @@
             submit:               ".reset-button",
             code:                 "input[name='code']"
         },
-        bindings: [
-            {
-                selector:    "code",
-                path:        "code"
-            },
-            // We have to duplicate the bindings from `passwordCheckingForm` for now.
-            // TODO:  Review with Antranig
-            {
-                selector: "confirm",
-                path:     "confirm"
-            },
-            {
-                selector: "password",
-                path:     "password"
-            }
-        ]
+        bindings: {
+            "code":     "code"
+        }
     });
 })(jQuery);

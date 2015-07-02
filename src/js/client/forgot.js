@@ -3,7 +3,8 @@
 (function () {
     "use strict";
     fluid.defaults("gpii.express.couchuser.frontend.forgot", {
-        gradeNames: ["gpii.templates.hb.client.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.templates.templateFormControl", "autoInit"],
+        container:  ".forgot-viewport",
         ajaxOptions: {
             type:        "POST",
             url:         "/api/user/forgot"
@@ -18,16 +19,17 @@
             submit:  ".forgot-button",
             email:    "input[name='email']"
         },
-        bindings: [
-            {
-                selector:    "email",
-                path:        "email"
-            }
-        ],
+        bindings: {
+            "email": "email"
+        },
         templates: {
             "initial": "forgot-viewport",
             "error":   "common-error",
             "success": "success"
         }
+    });
+
+    fluid.defaults("gpii.express.couchuser.frontend.forgot.hasUserControls", {
+        gradeNames: ["gpii.express.couchuser.frontend.forgot", "gpii.ul.hasUserControls"]
     });
 })(jQuery);
