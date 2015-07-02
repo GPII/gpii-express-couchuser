@@ -48,6 +48,7 @@
 
     fluid.defaults("gpii.express.couchuser.frontend.controls", {
         gradeNames: ["gpii.templates.templateFormControl", "autoInit"],
+        container:  ".controls-viewport",
         ajaxOptions: {
             type:     "POST",
             url:      "/api/user/signout"
