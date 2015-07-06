@@ -64,7 +64,7 @@
                 user: {
                     literalValue: null
                 },
-                "successMessage": "notfound"
+                "successMessage": { literalValue: false }
             }
         },
         selectors: {

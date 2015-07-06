@@ -2,6 +2,17 @@
 /* global fluid, jQuery */
 (function () {
     "use strict";
+    var gpii = fluid.registerNamespace("gpii");
+
+    fluid.registerNamespace("gpii.express.couchuser.frontend.login");
+
+        // If the user controls are used to log out, we have to manually clear the success message.
+    // If we delegate this to the controls component, it might clobber success messages for things other than the login.
+    gpii.express.couchuser.frontend.login.checkAndClearSuccess = function (that) {
+        if (!that.model.user) {
+            that.applier.change("successMessage", null);
+        }
+    };
 
     fluid.defaults("gpii.express.couchuser.frontend.login", {
         gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.templates.templateFormControl", "autoInit"],
@@ -20,10 +31,17 @@
             dataType: "json"
         },
         modelListeners: {
-            "user.refresh": {
-                func:          "{that}.renderInitialMarkup",
-                excludeSource: "init"
-            }
+            "user.refresh": [
+                {
+                    func:          "{that}.renderInitialMarkup",
+                    excludeSource: "init"
+                },
+                {
+                    funcName:      "gpii.express.couchuser.frontend.login.checkAndClearSuccess",
+                    args:          ["{that}"],
+                    excludeSource: "init"
+                }
+            ]
         },
         rules: {
             modelToRequestPayload: {
