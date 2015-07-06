@@ -24,6 +24,15 @@
     background-color: #f3f3f3;
 }
 
-.user-controls .button {
-    margin-bottom: 0px;
+.user-controls-toggle::after {
+    border-color: #000000 transparent transparent transparent;
+    border-style: solid;
+    content: "";
+    display: block;
+    height: 0;
+    position: absolute;
+    top: 30%;
+    right: 10%;
+    border-width: .4em;
+    width: 0;
 }

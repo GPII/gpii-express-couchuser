@@ -18,6 +18,9 @@
 
     gpii.express.couchuser.frontend.controls.handleToggleKeys = function (that, event) {
         switch (event.keyCode) {
+            case 27: // escape
+                that.toggleMenu();
+                break;
             case 13: // enter
                 that.toggleMenu();
                 break;
