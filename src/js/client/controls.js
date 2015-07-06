@@ -62,9 +62,8 @@
             successResponseToModel: {
                 "":        "notfound",
                 user: {
-                    literalValue: null
-                },
-                "successMessage": { literalValue: false }
+                    literalValue: false
+                }
             }
         },
         selectors: {

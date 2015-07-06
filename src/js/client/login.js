@@ -24,6 +24,22 @@
         model: {
             user: null
         },
+        components: {
+            success: {
+                options: {
+                    template: "login-success",
+                    model: {
+                        user: "{login}.model.user"
+                    },
+                    modelListeners: {
+                        // TODO:  Review with Antranig to confirm why the rules in `templateMessage` aren't enough to handle this.
+                        user: {
+                            func: "{that}.renderInitialMarkup"
+                        }
+                    }
+                }
+            }
+        },
         ajaxOptions: {
             url:      "/api/user/signin",
             method:   "POST",
@@ -53,9 +69,6 @@
                 user: "responseJSON.user",
                 password: {
                     literalValue: ""
-                },
-                successMessage: {
-                    literalValue: "You are now logged in."
                 }
             }
         },
