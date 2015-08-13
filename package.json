@@ -1,20 +1,25 @@
 {
-  "name": "gpii-express-couchuser",
-  "version": "0.0.0",
+  "name":        "gpii-express-couchuser",
+  "version":     "0.0.0",
   "description": "A series of fluid components that interact with express-couchUser to provide user management widgets.  Also provides a router module to mount express-couchuser.",
-  "main": "",
+  "author":      "Tony Atkins <tony@raisingthefloor.org>",
+  "license":     "BSD-3-Clause",
   "scripts": {
-    "test": "src/tests/js/all-tests.js"
+    "test": "src/tests/js/all-tests.js",
+    "postinstall": "grunt dedupe-infusion"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/the-t-in-rtf/gpii-express-couchuser"
+    "url":  "https://github.com/the-t-in-rtf/gpii-express-couchuser"
   },
-  "author": "Tony Atkins <tony@raisingthefloor.org>",
-  "license": "See LICENSE file for details.",
   "dependencies": {
     "express-user-couchdb": "0.3.4",
     "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#87cbf538dec8e4ee0d957b96b2cf646198664785",
+    "grunt":                "~0.4.4",
+    "grunt-contrib-jshint": "~0.9.0",
+    "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
+    "grunt-jsonlint":       "1.0.4",
+    "grunt-shell":          "0.6.4",
     "infusion":             "git://github.com/fluid-project/infusion.git#605b0bcfaedf6193c31456236d3aa4e42cf36a96",
     "when":                 "3.7.2"
   },
@@ -23,11 +28,6 @@
     "gpii-express":         "git://github.com/GPII/gpii-express.git#7d4ec39ac4cef7c1dced6bf7e8d91fc18b5af34c",
     "gpii-mail-test":       "git://github.com/GPII/gpii-mail-test.git#1a370678e3fac0a52ba0193beda1cb4ab27a76ac",
     "gpii-pouch":           "git://github.com/GPII/gpii-pouchdb.git#0e58802a1379582f61b84ceda9d9e441ae98c1e3",
-    "grunt":                "~0.4.4",
-    "grunt-contrib-jshint": "~0.9.0",
-    "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
-    "grunt-jsonlint":       "1.0.4",
-    "grunt-shell":          "0.6.4",
     "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
     "kettle":               "git://github.com/fluid-project/kettle.git#e79bb81196df68c97eaa9f96c485a4321b69af75",
     "mailparser":           "0.4.9",
