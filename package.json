@@ -1,0 +1,38 @@
+{
+  "name":        "gpii-express-couchuser",
+  "version":     "0.0.0",
+  "description": "A series of fluid components that interact with express-couchUser to provide user management widgets.  Also provides a router module to mount express-couchuser.",
+  "author":      "Tony Atkins <tony@raisingthefloor.org>",
+  "license":     "BSD-3-Clause",
+  "scripts": {
+    "test": "src/tests/js/all-tests.js",
+    "postinstall": "grunt dedupe-infusion && bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/the-t-in-rtf/gpii-express-couchuser"
+  },
+  "dependencies": {
+    "express-user-couchdb": "0.3.4",
+    "gpii-express":         "git://github.com/the-t-in-rtf/gpii-express#4750af51a1fbe886a260d89097e58c1c624ab4f7",
+    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#136266a1e762bb9d1fc332256ee8eed44d869562",
+    "grunt":                "~0.4.4",
+    "grunt-contrib-jshint": "~0.9.0",
+    "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
+    "grunt-jsonlint":       "1.0.4",
+    "grunt-shell":          "0.6.4",
+    "handlebars":           "2.0.0",
+    "infusion":             "git://github.com/fluid-project/infusion.git#282f1a318718eed0b0ec060fb8b4ad254417fd7e",
+    "when":                 "3.7.2"
+  },
+  "devDependencies": {
+    "email-templates":      "1.1.2",
+    "gpii-mail-test":       "git://github.com/the-t-in-rtf/gpii-mail-test.git#ffa39865bd635381b53ef7bbfd969955b371088a",
+    "gpii-pouch":           "git://github.com/the-t-in-rtf/gpii-pouchdb.git#478780cc61f60e7eded71819354c55026d96caf5",
+    "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#b7ef53aac1ca365bf23d35d255fae874faa88b70",
+    "kettle":               "git://github.com/amb26/kettle.git#33e2826e78315c6d29b13c8ba810f54fef29e8ac",
+    "mailparser":           "0.4.9",
+    "request":              "2.51.0",
+    "zombie":               "3.1.1"
+  }
+}
