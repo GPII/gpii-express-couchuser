@@ -62,7 +62,8 @@ function runTests() {
                     // Now try to log out using the profile controls
                     //
                     // We had to make jQuery fire the events (see below).
-                    browser.evaluate("$('.user-controls-toggle').click()");
+                    toggle.click();
+                    //browser.evaluate("$('.user-controls-toggle').click()");
                     browser.evaluate("$('.user-menu-logout').click()");
 
                     // We have to wait for the refresh to complete (the default wait period is 0.5 seconds)

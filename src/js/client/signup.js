@@ -4,7 +4,7 @@
     "use strict";
 
     fluid.defaults("gpii.express.couchuser.frontend.signup", {
-        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm"],
         container:  ".signup-viewport",
         ajaxOptions: {
             type:   "POST",

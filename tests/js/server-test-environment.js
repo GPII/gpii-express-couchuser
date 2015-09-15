@@ -26,7 +26,7 @@ var userDataFile    = path.resolve(__dirname, "../data/users/users.json");
 var viewDir         = path.resolve(__dirname, "../views");
 
 fluid.defaults("gpii.express.couchuser.tests.server.environment", {
-    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    gradeNames: ["fluid.test.testEnvironment"],
     port:   7532,
     smtpPort: 4029,
     pouchPort: 7534,
@@ -47,31 +47,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                         session: {
                             secret: "Printer, printer take a hint-ter."
                         }
-                    },
-                    app: {
-                        name: "GPII Express Couchuser Test Server",
-                        url:  "{testEnvironment}.options.baseUrl"
-                    },
-                    users: "http://localhost:7534/_users",
-                    //users: "http://localhost:5984/_users", // Use Couchdb for now
-                    //request_defaults: {
-                    //    auth: {
-                    //        user: "admin",
-                    //        pass: "admin"
-                    //    }
-                    //},
-                    email:  {
-                        from: "no-reply@ul.gpii.net",
-                        service: "SMTP",
-                        SMTP: {
-                            host: "localhost",
-                            port: "{testEnvironment}.options.smtpPort"
-                        },
-                        templateDir: mailTemplateDir
-                    },
-                    verify: true,
-                    safeUserFields: "name email displayName",
-                    adminRoles: [ "admin"]
+                    }
                 },
                 components: {
                     json: {
@@ -87,7 +63,23 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                         type: "gpii.express.middleware.session"
                     },
                     user: {
-                        type: "gpii.express.couchuser.server"
+                        type: "gpii.express.couchuser.server",
+                        options: {
+                            app: {
+                                name: "GPII Express Couchuser Test Server",
+                                url:  "{testEnvironment}.options.baseUrl"
+                            },
+                            users: "http://localhost:7534/_users",
+                            email:  {
+                                from: "no-reply@ul.gpii.net",
+                                service: "SMTP",
+                                SMTP: {
+                                    host: "localhost",
+                                    port: "{testEnvironment}.options.smtpPort"
+                                },
+                                templateDir: mailTemplateDir
+                            }
+                        }
                     },
                     modules: {
                         type:  "gpii.express.router.static",
@@ -114,9 +106,9 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
                         type: "gpii.express.hb"
                     },
                     content: {
-                        type: "gpii.express.hb.dispatcher",
+                        type: "gpii.express.dispatcher",
                         options: {
-                            path:    "/content/:template"
+                            path: "/content/:template"
                         }
                     },
                     inline: {
@@ -132,11 +124,11 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
             type: "gpii.express",
             options: {
                 listeners: {
-                    "onStarted": "{testEnvironment}.events.pouchStarted.fire"
+                    onStarted: "{testEnvironment}.events.pouchStarted.fire"
                 },
                 config: {
                     express: {
-                        "port" :   7534,
+                        port:    7534,
                         baseUrl: "http://localhost:7534/"
                     },
                     app: {
@@ -179,7 +171,7 @@ fluid.defaults("gpii.express.couchuser.tests.server.environment", {
         expressStarted:  null,
         pouchStarted:    null,
         smtpReady:       null,
-        onReady: {
+        onStarted: {
             events: {
                 expressStarted: "expressStarted",
                 smtpReady:      "smtpReady"

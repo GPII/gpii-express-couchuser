@@ -6,7 +6,7 @@
   "license":     "BSD-3-Clause",
   "scripts": {
     "test": "src/tests/js/all-tests.js",
-    "postinstall": "grunt dedupe-infusion"
+    "postinstall": "grunt dedupe-infusion && bower install"
   },
   "repository": {
     "type": "git",
@@ -14,22 +14,23 @@
   },
   "dependencies": {
     "express-user-couchdb": "0.3.4",
-    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#87cbf538dec8e4ee0d957b96b2cf646198664785",
+    "gpii-express":         "git://github.com/the-t-in-rtf/gpii-express#4750af51a1fbe886a260d89097e58c1c624ab4f7",
+    "gpii-handlebars":      "git://github.com/the-t-in-rtf/gpii-handlebars.git#136266a1e762bb9d1fc332256ee8eed44d869562",
     "grunt":                "~0.4.4",
     "grunt-contrib-jshint": "~0.9.0",
     "grunt-gpii":           "git://github.com/GPII/grunt-gpii.git#58ae055833f437a9e91baedb9f39a22c5fdd727f",
     "grunt-jsonlint":       "1.0.4",
     "grunt-shell":          "0.6.4",
-    "infusion":             "git://github.com/fluid-project/infusion.git#605b0bcfaedf6193c31456236d3aa4e42cf36a96",
+    "handlebars":           "2.0.0",
+    "infusion":             "git://github.com/fluid-project/infusion.git#282f1a318718eed0b0ec060fb8b4ad254417fd7e",
     "when":                 "3.7.2"
   },
   "devDependencies": {
     "email-templates":      "1.1.2",
-    "gpii-express":         "git://github.com/GPII/gpii-express.git#7d4ec39ac4cef7c1dced6bf7e8d91fc18b5af34c",
-    "gpii-mail-test":       "git://github.com/GPII/gpii-mail-test.git#1a370678e3fac0a52ba0193beda1cb4ab27a76ac",
-    "gpii-pouch":           "git://github.com/GPII/gpii-pouchdb.git#0e58802a1379582f61b84ceda9d9e441ae98c1e3",
-    "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#e9bf72445bd343a4f3aabe3ba96a1087d3498612",
-    "kettle":               "git://github.com/fluid-project/kettle.git#e79bb81196df68c97eaa9f96c485a4321b69af75",
+    "gpii-mail-test":       "git://github.com/the-t-in-rtf/gpii-mail-test.git#ffa39865bd635381b53ef7bbfd969955b371088a",
+    "gpii-pouch":           "git://github.com/the-t-in-rtf/gpii-pouchdb.git#478780cc61f60e7eded71819354c55026d96caf5",
+    "jqUnit":               "git://github.com/fluid-project/node-jqUnit.git#b7ef53aac1ca365bf23d35d255fae874faa88b70",
+    "kettle":               "git://github.com/amb26/kettle.git#33e2826e78315c6d29b13c8ba810f54fef29e8ac",
     "mailparser":           "0.4.9",
     "request":              "2.51.0",
     "zombie":               "3.1.1"

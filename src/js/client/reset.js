@@ -12,7 +12,7 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.reset", {
-        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.express.couchuser.frontend.passwordCheckingForm"],
         container:  ".reset-viewport",
         ajaxOptions: {
             type:    "POST",

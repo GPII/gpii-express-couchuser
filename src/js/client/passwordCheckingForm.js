@@ -28,7 +28,7 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.passwordCheckingForm", {
-        gradeNames: ["gpii.templates.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.templates.templateFormControl"],
         model: {
             password: null,
             confirm:  null

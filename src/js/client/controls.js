@@ -50,7 +50,7 @@
     };
 
     fluid.defaults("gpii.express.couchuser.frontend.controls", {
-        gradeNames: ["gpii.templates.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.templates.templateFormControl"],
         container:  ".controls-viewport",
         ajaxOptions: {
             type:     "POST",

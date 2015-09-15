@@ -3,7 +3,7 @@
 (function () {
     "use strict";
     fluid.defaults("gpii.express.couchuser.frontend.forgot", {
-        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.templates.templateFormControl", "autoInit"],
+        gradeNames: ["gpii.express.couchuser.frontend.canHandleStrings", "gpii.templates.templateFormControl"],
         container:  ".forgot-viewport",
         ajaxOptions: {
             type:        "POST",

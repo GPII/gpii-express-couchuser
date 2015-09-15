@@ -12,21 +12,26 @@ var gpii  = fluid.registerNamespace("gpii");
 fluid.registerNamespace("gpii.express.couchuser.server");
 
 gpii.express.couchuser.server.init = function (that) {
-    that.options.router = require("express-user-couchdb")(that.options.config);
+    that.options.router = require("express-user-couchdb")(that.options);
 
-    // Fix the monkey business that couchuser performs on the view directory location in express.
-    that.options.router.set("views", that.options.config.express.views);
+    if (that.options.views) {
+        // Fix the monkey business that couchuser performs on the view directory location in express.
+        that.options.router.set("views", that.options.views);
+    }
 };
 
 // We have to act very oddly to avoid problems cause by the express 3.x ness of this module
 // We are middleware, but expose a router object
-gpii.express.couchuser.server.getMiddleware = function (that) {
-    return that.options.router;
+gpii.express.couchuser.server.middleware = function (that, req, res, next) {
+    that.options.router(req, res, next);
 };
 
 fluid.defaults("gpii.express.couchuser.server", {
-    gradeNames: ["gpii.express.middleware", "autoInit"],
-    config: "{expressConfigHolder}.options.config",
+    gradeNames: ["gpii.express.middleware"],
+    "verify":         true,
+    "safeUserFields": "name email displayName",
+    "adminRoles":     [ "admin"],
+    "views":          "{expressConfigHolder}.options.config.express.views",
     components: {
         json: {
             type: "gpii.express.middleware.bodyparser.json"
@@ -43,9 +48,9 @@ fluid.defaults("gpii.express.couchuser.server", {
     },
     path:    "/api/user",
     "invokers": {
-        "getMiddleware": {
-            "funcName": "gpii.express.couchuser.server.getMiddleware",
-            "args": ["{that}"]
+        "middleware": {
+            "funcName": "gpii.express.couchuser.server.middleware",
+            "args":    ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
         }
     },
     listeners: {

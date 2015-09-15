@@ -24,7 +24,7 @@ var viewDir         = path.resolve(__dirname, "../../views");
 
 
 fluid.defaults("gpii.express.couchuser.tests.harness", {
-    gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+    gradeNames: ["fluid.modelComponent"],
     expressPort: 7633,
     baseUrl:     "http://localhost:7633",
     pouchPort:   7634,
@@ -62,30 +62,7 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         session: {
                             secret: "Printer, printer take a hint-ter."
                         }
-                    },
-                    app: {
-                        name: "GPII Express Couchuser Test Server",
-                        url:  "{harness}.options.baseUrl"
-                    },
-                    users: "{harness}.options.usersUrl",
-                    request_defaults: {
-                        auth: {
-                            user: "admin",
-                            pass: "admin"
-                        }
-                    },
-                    email:  {
-                        from: "no-reply@ul.gpii.net",
-                        service: "SMTP",
-                        SMTP: {
-                            host: "localhost",
-                            port: "{harness}.options.smtpPort"
-                        },
-                        templateDir: mailTemplateDir
-                    },
-                    verify: true,
-                    safeUserFields: "name email displayName",
-                    adminRoles: [ "admin"]
+                    }
                 },
                 components: {
                     json: {
@@ -100,6 +77,31 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     session: {
                         type: "gpii.express.middleware.session"
                     },
+                    user: {
+                        type: "gpii.express.couchuser.server",
+                        options: {
+                            app: {
+                                name: "GPII Express Couchuser Test Server",
+                                url:  "{harness}.options.baseUrl"
+                            },
+                            users: "{harness}.options.usersUrl",
+                            email:  {
+                                from: "no-reply@ul.gpii.net",
+                                service: "SMTP",
+                                SMTP: {
+                                    host: "localhost",
+                                    port: "{harness}.options.smtpPort"
+                                },
+                                templateDir: mailTemplateDir
+                            },
+                            request_defaults: {
+                                auth: {
+                                    user: "admin",
+                                    pass: "admin"
+                                }
+                            }
+                        }
+                    },
                     modules: {
                         type:  "gpii.express.router.static",
                         options: {
@@ -110,7 +112,7 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                     js: {
                         type:  "gpii.express.router.static",
                         options: {
-                            path:    "/",
+                            path:    "/js",
                             content: srcDir
                         }
                     },
@@ -131,14 +133,10 @@ fluid.defaults("gpii.express.couchuser.tests.harness", {
                         }
                     },
                     inline: {
-                        type: "gpii.express.inline",
+                        type: "gpii.express.hb.inline",
                         options: {
                             path: "/hbs"
                         }
-                    },
-                    // For some reason, we need to load "user" relatively late so that all the middleware upstream (notably body parsing) is in place
-                    user: {
-                        type: "gpii.express.couchuser.server"
                     }
                 }
             }
